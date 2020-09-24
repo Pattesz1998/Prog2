@@ -1,0 +1,82 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Liskov!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>Liskov helyettesítés sértése</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>Szülő-gyerek</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section> 
+
+    <section>
+        <title>Anti OO</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>Hello, Android!</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>    
+
+    <section>
+        <title>Hello, SMNIST for Humans!</title>
+        	<para>
+                Fealadatleírás, PIROS FELADAT
+            </para>
+
+    </section> 
+
+    <section>
+        <title>Ciklomatikus komplexitás</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section> 
+
+    <section>
+        <title>EPAM: Interfész evolúció Java-ban</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>  
+
+    <section>
+        <title>EPAM: Liskov féle helyettesíthetőség elve, öröklődés</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>  
+
+    <section>
+        <title>EPAM: Interfész, Osztály, Absztrak Osztály</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>    
+        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter>                

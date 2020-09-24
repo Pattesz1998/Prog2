@@ -1,0 +1,100 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Arroway!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>A BPP algoritmus Java megvalósítása</title>
+        <para>
+            Ez már a Prog2, de előre dolgozhatsz a nyári szünetben!
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://regi.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apas03.html">https://regi.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apas03.html</link>               
+        </para>
+    </section>        
+
+    <section>
+        <title>Java osztályok a Pi-ben</title>
+        <para>
+            Az előző feladat kódját fejleszd tovább: vizsgáld, hogy Vannak-e Java osztályok a Pi hexadecimális kifejtésében!
+        </para>
+
+    </section>
+
+    <section>
+        <title>INNEN KEZDŐDNEK A SYLLABUS SZERINTI FELADATOK</title>
+        <para>
+            Ha szükséged van feladatleírásra  <link xlink:href="https://drive.google.com/drive/folders/1NRZkvRTdbZHy0lanTcksEpc9VXlSFlYZ">itt van a syllabus</link> 
+        </para>
+
+    </section>          
+        
+    <section>
+        <title>OO szemlélet</title>
+            <para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+
+	<section>
+        <title>Homokózó</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>„Gagyi”</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>Yoda</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>Kódolás from scratch</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>EPAM: Java Object metódusok</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>EPAM: Eljárásorientál vs Objektumorientált</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+     <section>
+        <title>EPAM: Objektum példányosítás programozási mintákkal</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter>                

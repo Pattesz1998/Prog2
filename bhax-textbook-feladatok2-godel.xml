@@ -1,0 +1,81 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Gödel!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>Gengszterek</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>C++11 Custom Allocator</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>STL map érték szerinti rendezése</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>Alternatív Tabella rendezése</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>Prolog családfa</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>GIMP Scheme hack</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>EPAM: Mátrix szorzás Stream API-val</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>EPAM: LinkedList vs ArrayList</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>EPAM: Refactoring</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section> 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+</chapter>           

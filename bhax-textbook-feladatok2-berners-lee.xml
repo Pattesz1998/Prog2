@@ -1,0 +1,317 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Berners-Lee! - Olvasónapló</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>C++ vs Java összehasonlítása</title>
+        <para>
+            Mint ahogy a feladatunk címe is sugallja, ebben a fejezetben a C++ és a Java nyelveket fogjuk összehasonlítani Benedek Zoltán, Levendovszky Tihamér Szoftverfejlesztés C++ nyelven, valamint Nyékyné Dr. Gaizler Judit et al. Java 2 útikalauz programozóknak 5.0 I-II. c. könyvek alapján.
+        </para>
+		<para>
+            Az összehasonlítási alapul szolgáló két programozási nyelv, egyaránt az objektumorientált programozási nyelvek csoportjába tartozik. 
+            Az objektumorientáltságra jellemző, hogy szintaxis szerint a programok osztályokból, valamint az ezekből létrehozott objektumokból állnak.
+            A nyelvekre jellemző kurriózumok közé tartozik továbbá, hogy lehetőségünk van lényegesebben összetettebb kódok programozására, valamint bonyolultabb problémák lemodellezésére is.
+        </para>
+		<para>
+        A tervezési célokat vizsgálva, a C++ nyelvet rendszerek, valamint alkalmazások programozására fejlesztettek ki, a C programozási nyelv kiterjesztésével.
+        A C nyelvhez a C++ támogatja az objektumorientált programozást, a kivételkezelést, az élethosszig tartó erőforrás-kezelést (RAII), az általános programozást, a Template metaprogramming -et (TMP), valamint a C++ szabvány könytárát, amely általános tárolókat és algoritmusokat tartalmaz.
+        A Java egy áltálonos célú, statikusan tipizált (gépelt), egyidejű, osztály alapú, objektumorientált programozási nyelv, melyet a végrehajtási függőségek minimalizálására terveztek.
+        Maga a nyelv virtuális gépre támaszkodik, mely megfelelő biztonságot és könnyed "hordozhatóságot" rejt magában.
+        A nyelvi csomag egy kiterjedt könytárrendszerrel van ellátva, melynek célja az alapjául szolgáló platform teljes absztrakciója.
+        Ugyan a szintaxisa kísértetiesen hasonló a C++ nyelvéhez, azonban azzal nem kombatibilis.(pl: míg a C++ nyelv esetében lehetséges olyan futtatható programot írnunk melyben nem kell osztályt definiálnunk, addig ez a java nyelv esetén nem lehetséges (mivel a Java -ban a legkisebb önálló egységek az osztályok)).
+        Itt egy egyszerű példa erre a hasonlóságra:
+        <programlisting language="c++">
+                <![CDATA[
+                //C++
+                class osztaly
+                {
+                    public:
+                    static doStuff();
+                };
+                osztaly::doStuff();
+                ]]>
+        </programlisting>
+        <programlisting language="java">
+                <![CDATA[
+                //Java
+                class osztaly
+                {
+                    public static doStuff()
+                    {}
+                }
+                osztaly.doStuff();
+                ]]>
+        </programlisting>    
+        </para>
+        <para>
+        Az osztályainknak létre tudunk hozni különböző példányokat, melyek minden esetben az adott osztály tulajdonságával rendelkeznek.
+        Ilyen eset lehet pl: amennyiben létrehozunk egy autó osztályt, melyben képesek leszünk különböző tulajdonságok tárolására (autó márkája, színe, stb.)
+        Ezeket az adatokat általában az osztályban létrehozott változókban tároljuk.
+        A változókat, osztályokon kívülről legtöbbször függvények segítségével tudjuk definiálni , (illetve módosítani).
+        </para>
+        <para>
+        A programozók többsége az osztályok változóit többnyire védetté szokták tenni, erre azért van szükség, hogy ne tudjunk helytelen parmétert (értéket) megadni.
+        A fent említett megoldást a private kulcsszó használatával lehet kivitelezni, mely a tag hozzáférését privátként deklarálja (vagyis a tag csak az adott osztályon belül látható, semmilyen más osztályból (beleértve az alosztályokat is) viszont nem.)
+        A privát tagok láthatósága ez esetben kiterjed a beágyazott osztályokra is.
+        Létezik azonban egy másik kulcsszó is, melyet public -nak nevezünk.
+        Itt a tag az adott osztályon kívülről is elérhető, így általában itt szokás deklarálni a függvényeinket.
+        </para>
+        <para>
+        Amennyiben alapesetben nem állítjuk be az osztálybeli változóink elérhetőségét, abban az esetben a default változó érték private lesz, azonban ezt a későbbiek folyamán bármikor szabadon módosíthatjuk.
+        C++ nyelv esetében magában az osztály public részében hozzuk létre a változót,míg Java nyelv esetében az osztály deklarációjakor a public kulcsszó segítségével tudjuk ezt megtenni.
+        </para>
+        <para>
+        Az oszályokban szereplő változóinkat lehetőségünk van egy tetszőleges kezdőértékkel ellátni, viszont! amennyiben ezt nem tesszük meg, abban az esetben C++ program esetén a kezdőértékünk egy véletlenszerű érték lesz, míg Java esetében 0.
+        Különböző változók létrehozása esetén azonban könnyedén hibaüzenetekbe ütközhetünk, ezért, hogy ezt az eshetőséget elkerüljük, mind a két programnyelvünk konstruktorokat használ.
+        </para>
+        <para>
+        Na de mik is azok a konstruktorok? ..... 
+        Konstruktornak hívjuk az objektumorientált programozási nyelvekben egy osztály azon metódusát, amely az objektum példányosításakor hívódik meg.
+        A konstruktor felelősségi területe általában az, hogy az objektum adattagjait egy osztály szempontjából értelmezhető, érvényes állapotba hozza (egyes programozási nyelvekben az objektum által használt memóriaterület lefoglalásáért is felelős.)
+        Amennyiben programozáskor nem hozunk létre olyan konstruktort, mely a kezdeti értékeket kezeli, abban az esetben a programnyelvbe alapértelmezettként beépített konstruktor fog lefutni.
+        </para>
+        <para>
+        A két nyelv közös alkotóelemei közé tartoznak továbbá a metódusok is ..... 
+        De hogy mik is azok a metódusok?
+        A metódus, (vagy más néven tagfüggvény), egy olyan eljárás, vagy függvény, amelyet az objektumon belül deklarálunk, mivel szorosan kapcsolódik magához az objektumunkhoz.
+        A metódus az objektumorientált programozás egyik legfontosabb alkotóeleme. Tulajdonképpen arról van szó, hogy az adatmezőkhöz hasonlóan függvény vagy eljárás típusú mezőket is megadhatunk egy objektumtípus definiálásakor. 
+        Az iyen jellegű objektum mezőket összefoglaló néven metódusoknak nevezzük.
+        </para>
+        <para>
+        A metódusoknak két fajtája létezik: az egyik az eljárás, a másik pedig a függvény.
+        Az eljárásokat lehetőségünk van speciális függvényként értelmezni, mivel nagyon hasonítanak egymásra.
+        A különbég mindösszesen abban irányul meg, hogy az eljárásoknak nincsen visszatérítési értékük, míg a függvényeknek van.
+        Az eljárások bevezetésére a programozásban ismert void kulcsszót fogjuk használni.
+        Függvények használata esetében a megadott kulcsszó az a típus lesz amivel a végén visszatér a függvényünk.
+        </para>
+        <para>
+        A metódusok létrehozásakor lehetőségünk van különböző paraméterek megadására, melyeket meghíváskor kapnak meg, ezekkel az értékekkel fognak metódusaink dolgozni.
+        Léteznek azonban olyan eshetőségek is, amikor a metódusunk létrehozása esetén egy alapértelmezett (default) értékkel definiáljuk a paramétereket.
+        Ezen megoldásra a C++ egyszerű lehetőséget nyújt, azonban Java esetén egy picit eltérő megvalósítást kell alkalmaznunk, ezt az alábbi példakódok segítségével tudjuk a legjobban szemléltetni.
+        <programlisting language="c++">
+                <![CDATA[
+                //C++ változat
+                int darab (int a = 1, int b = 1)
+                {}
+                ]]>
+        </programlisting>
+         <programlisting language="java">
+                <![CDATA[
+                //Java verzió
+                int darab (int a, int b)
+                {
+                    a = 1;
+                    b = 1;
+                }
+
+                ]]>
+        </programlisting>    
+        </para>
+        <para>
+        Térjünk át a memória kezelésben rejlő különbségek bemutatására, mivel ezen terület nagyban eltér a két nyelv vonatkozásában.
+        Míg a Java nyelv alapértelmezetten tartalmaz beépített memória kezelést, azonban C++ nyelv esetében, ez lényegeseb más módon valósul meg.
+        Amennyiben a memória terhelését/kihasználtságát vizsgáljuk, fontos megjegyezni, hogy mekkora szabad kapacitása van még? illetve amire már nincs szükségünk benne, azt lehetőség szerint töröljük.
+        Ez azért fontos, hiszen amennyiben a felesleges adatokat nem töröljük ki, abban az esetben előbb vagy utóbb el fog fogyni memóriánk kapacitása, ennek következtében a programunk már nem lesz képes a jól megszokott, megfelelő módon tovább működni.
+        Java nyelvben a memória kezelésre léteznek u.n: beépített metódusok, melyek autómatikusan meghívásra kerülnek, amennyiben már szükségtelen adatok találhatóak benne.
+        Azonban, lehetőségünk van arra is, hogy kérést küldjünk a JVM számára, hogy a Garbage Collectort futtassuk.
+        C++ esetén ez egészen másképp zajlik, itt nincs lehetőségünk beépített Garbage Collector-t használni.
+        C++ nyelven, amennyiben a memóriából törölni szeretnénk a, már használaton kívüli adatokat, akkor ezt saját magunknak kell megírnunk.
+        Ebből az következik, hogy mindig az aktuális helyzethez legmegfelelőbb módon lehet megírni magát a memóriakezelés folyamatát, így optimálisabb megoldás lehet mint a java beépített verziója.
+        <programlisting language="java">
+                <![CDATA[
+                public class Test
+                {
+                    public static void main(String[] args) throws ←-
+                        InterruptedException
+                    {
+                        Test t1 = new Test();
+                        Test t2 = new Test();
+                        // Nullifying the reference variable
+                        t1 = null;
+                        // requesting JVM for running Garbage Collector
+                        System.gc();
+                        // Nullifying the reference variable
+                        t2 = null;
+                        // requesting JVM for running Garbage Collector
+                        Runtime.getRuntime().gc();
+                    }
+                }
+
+                ]]>
+        </programlisting>    
+        </para>
+        <para>
+        Nézzük meg mi is az a Garbage Collector?
+        A számítógép-programozásban a szemétgyűjtés (garbage collection) a memóriakezelés egyik biztonságos formája.
+        A Garbage Collector (GC) megkísérli eltávolítani a memóriából azokat az objektumokat, amelyeket a programunk már nem használ.
+        A módszert gyakran állíják szembe a hagyományos, manuális memóriakezeléssel, ahol a programozó szabja meg az egyes objektumok élettartamát.
+        Alapelve: meghatározni mely objektumok nincsenek már használatban, illetve felszabadítani az általuk elfoglalt memóriát.
+        Garbage collection előnyei: Megszabadítja a programozót a memóriamanageléstől, így ki tudunk küszöbölni néhány gyakori hibát pl:
+        Dangling pointerek:a mutatott memóriahely már felszabadult, de még van rá hivatkozás 
+        Többszörös felszabadítás: a már felszabadított memóriát ismét felszabadítja a program.
+        Memóriaszivárgás (memory leak): a már nem használt memória lefoglalva marad, anélkül, hogy felszabadulna.
+        Hátrányai: Lassú, folyamatosan figyelni kell az objektumokat, ez számításigényes feladat.
+        Nem determinisztikus. Minden objektum törlődni fog, de nem tudni, hogy mikor.
+        </para>
+        <para>
+        A memória kezelés egyik másik fontos eleme: a pointerek?
+        De mik is azok a pointerek?
+        A programozásban mutatónak (pointer) hívjuk azokat a változókat, melyek tartalma egy memória terület címe.
+        Általában memóriaterületek, rekordok, objektumok, más változók tartalmának elérésére és módosítására használjuk őket.
+        Megkülönböztetünk típussal rendelkező és típus nélküli mutatókat. Előbbiek csak a típusuknak megfelelő típusú változük adatterületére mutathatnak.
+        </para>
+        <para>
+        A C++ -ban igencsak gyakran használunk pointereket, Javában viszont nem léteznek.
+        Javában a pointerek helyett hivatkozásokat találhatunk, melyek segítségével dolgozni tudunk.
+        Nincsenek mutatók, melyek változókra vagy függvényekre mutatnának, helyette visszatérési értékeket, interfészeket használunk.
+        </para>
+        <para>
+        A dimanikus adatszerkezetek is más megvalósításban szerepelnek mint Javában mind pedig C++ -ban.
+        Míg C++ esetében vektorok szerepelnek, addig Java esetében ezen cél megvalósítására az ArrayList-et használhatjuk.
+        Magában a Java nyelvben is találkozhatunk ugyan vektorokkal, azonban gyakorlati szempontból ez a módszer jelentősen elavulttá vált.
+        Míg az ArrayList párhuzamosítható tulajdonsággal rendelkezik, addig a vektorhoz egyszerre csak egy szál képes hozzáférni, így lassabb működésre lesz képes.
+        C++ nyelv esetében nem találkozunk ezzel az ArrayList sorral.
+        <programlisting language="java">
+                <![CDATA[
+                // Java megvalósítás
+                ArrayList<String> animals = new ArrayList<String>();
+                    animals.add("oroszlán");
+                    animals.add("medve");
+                    animals.add("tigris");
+                    animals.add("papagáj");
+                    System.out.println(animals);
+                ]]>
+        </programlisting> 
+        <programlisting language="c++">
+                <![CDATA[
+                // C++ megvalósítás
+                vector<string> v;
+                    v.push_back("Kutya");
+                    v.push_back("Macska");
+                    v.push_back("Veréb");
+
+                ]]>
+        </programlisting> 
+        </para>
+        <para>
+        A különböző kifejezések kiértékelése is más-más módon zajlik a két nyelvben.
+        C++ esetén az egyes kifejezések részeit változó sorrendben értékeljük ki, ezesetben nincs megszabott sorrend.
+        Java nyelvben ez a sorrend előre meghatározott érték alapján értékelődik ki. (a kiértékelés mindig balról jobbra történik). 
+        </para>
+        <para>
+        A programozás egy másik igencsak fontos része a kivételkezelés 
+        De mi is az a kivételkezelés?
+        A kivételkezelés egy programozási mechanizmus, melynek célja a program futását szándékosan vagy nem szándékos módon megszakító esemény (hiba) vagy utasítás kezelése.
+        Az eseményt magát kivételnek hívjuk. A hagyományos, szekvenciális és struktúrált programozási kereteken túlmutató hibakezelésre, valamint magasabb szintű hibadetektációra, esetleg korrigálásra használható 
+        </para>
+        <para>
+        Előfordulhatnak olyan események, amikor a megírt kódunk valamilyen oknál fogva nem tud megfelelő módon működni.
+        Ilyen eset lehet pl: amikor egy fileból szeretnénk beolvasni valamit, azonban a megadott file nem létezik.
+        Ezen esetben bátran használhatjuk magát a kivételkezelést.
+        Nagy előnye, hogy C++ és Java nyelvben egyaránt használhatjuk, azonban amíg C++ esetén a fordító "lazábban" kezeli a kivételkezelést, addig Java nyelvben nem.
+        Ez azért van, mivel Javában a filból nincs lehetőségünk közvetlenül olvasni, amennyiben nins lekezelve az IOExeption.
+        <programlisting language="java">
+                <![CDATA[
+                // Kivétel kezelés Java nyelven
+                class Division {
+                    public static void main(String[] args)
+                    {
+                        int a = 10, b = 5, c = 5, result;
+                    try {
+                        result = a / (b - c);
+                        System.out.println("result" + result);
+                    }
+                    catch (ArithmeticException e) {
+                        System.out.println("Exception caught:Division by zero") ←-
+                            ;
+                    }
+                    finally {
+                        System.out.println("I am in final block");
+                    }
+                }
+            }
+
+                ]]>
+        </programlisting> 
+        <programlisting language="c++">
+                <![CDATA[
+                // Kivétel kezelés C++ nyelven
+                int main()
+                {
+                    int x = -1;
+                    // Some code
+                    cout << "Before try \n";
+                    try {
+                        cout << "Inside try \n";
+                        if (x < 0)
+                        {
+                            throw x;
+                            cout << "After throw (Never executed) \n";
+                        }
+                }
+                catch (int x ) {
+                    cout << "Exception Caught \n";
+                }           
+                cout << "After catch (Will be executed) \n";
+                return 0;
+            }
+
+                ]]>
+        </programlisting> 
+        </para>
+    </section>        
+
+    <section>
+        <title>Python - Élménybeszámoló</title>
+        <para>
+            Python: Forstner Bertalan, Ekler Péter, Kelényi Imre: Bevezetés a mobilprogramozásba.
+			Gyors prototípus-fejlesztés Python és Java nyelven (35-51 oldal)
+        </para>
+		<para>
+        A Python egy általános célú, magas szintű programozási nyelv, melyet Guido van Rossum holland programozó kezdett el fejleszteni 1989 végén.
+        A nyelv fő tervezési filozófiája szerint az olvashatóságot, valamint a programozói munka megkönnyítését helyezték előtérbe a futási sebességgel szemben (tehát inkább fusson le lassabban, azonban lényegesen egyszerű legyen a programozó számára.)
+        Többek között a funkcionális, az objektumorientált, az imperatív és a procedurális programozási paradigmákat támogatja.
+        A Python úgynevezett interpreteres nyelv, ami pontosan azt jelenti, hogy nincs különválasztva a forrás és a tárgykód, a megírt kódunk azonnal futtatható, amennyiben rendelkezünk előre telepített Python értelmezővel.
+        A nyelv számos előnyei közt szerepel, hogy sok beépített eljárást tartalmaz, valamint képes összetettebb adatszerkezetekkel is dolgozni. (ilyenek lehetnek pl: a listák valamint a szótárak is.)
+        </para>
+        <para>
+        Nyelv főbb jellemzői:
+        Számos programozási nyelvvel szemben, hogy Pyhton esetén nincs szükségünk fordításra a program futtatása előtt, mivel ezt a folyamatot elvégzi helyettünk a Python interpretere.
+        A nyelv rendkívül egyszerű szintaktikával rendelkezik, hiszen nincs szükség a kód tagolásánál zárójelezés alkalmazására (mint számos más nyelv esetében), itt a behúzások jelölik a tagolást.
+        Tagoláskor egyetlen kritériumnak kell megfelelnünk, a megírt program során végig egységes módon tagoljunk, azaz, amennyiben tabulátorral kezdtük el programunk tagolását, abban az esetben végig azt használjuk.
+        A nyelv további előnyei közé tartozik az is, hogy az utasításainkat nem szükséges lezárni, amennyiben egy új utasítást szeretnénk megadni, egyszerűen csak ütünk egy entert majd a következő utasítást már új sorba írjuk.
+        </para>
+        <para>
+        A Python nyelv többféle adatszerkezettel valamint különböző változókkal rendelkezik, ezen változók lehetnek akár számok, vagy stringek, valamint itt is létezik a Null értéknek megfelelő változó típus is.
+        A változó értékei a számokon belül is lehetnek egészek és lebegőpontosak is.
+        A nyelv egyszerű szintaktikáját illetve felépítését jelzi az is, hogy itt nincs szükség megadni külön az egyes változók típusait, mivel ezt maga a nyelv automatikusan megállapítja számunkra, az alapján, hogy mit tárolunk a változóban.
+        Találkozhatunk a már korábban említett összetett adatszerkezetekkel is, ilyenek a szótárak vagy a listák.
+        Előnyeik, pl: hogy egy listán belül többféle adatot is képesek vagyunk tárolni, még akkor is ha azoknak a típusai különbözőek lennének. (lényegében lehetőségünk van egyszerre számok valamint stringek alkalmazására is.)
+        Méretük dinamikus, ami azt jelenti, hogy folyamatosan bővíthetőek.
+        A szótár hasonló a listához, azonban annyi köztük a különbség, hogy a szótáraknak más szintaktika szerint zajlik az indexelésük.
+        A nyelv előnyei közé tartozik továbbá az is, hogy számos előre beépített függvényt tartalmaz, melyek nagyban megkönnyíthetik a listák használatát, csak arra várnak hogy használjuk őket.
+        </para>
+        <para>
+        A program nyelvi eszközei lényegében hasonlítanak a többi programozási nyelvben alkalmazottakhoz.
+        Itt is megtalálhatóak az elágazások, a ciklusok (számos fajtája), valamint a címkék is.
+        Az elágazások ugyan olyan elv szerint működnek mint más programozási nyelvekben, a ciklusok pedig merően hasonlóan, azonban nem teljesen azonosan működnek más programozási nyelvekhez hasonlítva.
+        Ami lényeges különbség a Pyhton esetében, hogy itt a többi nyelvtől eltérően itt a for ciklus megadása során megadhatjuk más módon is a for ciklust abban az esetben , ha azt listákra szeretnénk alkalmazni.
+        A címkék alkalmazása a nyelv esetében, a többi nyelvhez hasonlóan működik, tehát meghatározunk egy címkét és goto utasítással , a megadott címkéhez tudunk ugrani, ahonnan szeretnénk hogy a program futása folyatódjon.
+        </para>
+        <para>
+        A Python nyelvben is használhatunk különböző függvényeket és osztályokat, ezek használata nagyban hasonlít a C++ nyelvben alkalmazottakhoz.
+        Különbségek nyílván akadnak, azonban a működési elvük lényegében ugyanaz.
+        Különbségek közé tartozik az, hogy pl a függények esetén, akárcsak a változóknál nincs szükség arra, hogy megadjuk milyen típusú lesz az az elem, mely visszatértésre fog kerülni.
+        A függvényeknél lehetőségünk van arra is, hogy meghívásuk esetén a beadott változónak meghívás közben határozzuk meg az értékét.
+        Osztályok:
+        Az osztályok az objektumorientált programozás részét képezik, sajnos a könyv nem tér ki olyan sok dolgora ílyen téren, azonban fontos lehet kiemelni, hogy az osztályok képesek más osztályoktól örökölni.
+        </para>
+
+    </section>        
+        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter>       

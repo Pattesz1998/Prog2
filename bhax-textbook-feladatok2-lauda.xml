@@ -1,0 +1,91 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Lauda!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>Port scan</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>AOP</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>Android Játék</title>
+        	<para>
+                Fealadatleírás, ZÖLD FELADAT
+            </para>
+
+    </section>
+
+    <section>
+        <title>Junit teszt</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>     
+
+    <section>
+        <title>OSCI</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>OSCI2</title>
+        	<para>
+                Fealadatleírás, KÉK FELADAT
+            </para>
+
+    </section>
+
+    <section>
+        <title>OSCI3</title>
+        	<para>
+                Fealadatleírás, KÉK FELADAT
+            </para>
+
+    </section>
+
+    <section>
+        <title>EPAM: DI</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>EPAM: JSON szerializáció</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>EPAM: Kivételkezelés</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter>           

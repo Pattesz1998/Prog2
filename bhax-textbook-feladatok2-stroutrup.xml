@@ -1,0 +1,74 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Stroustrup!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>JDK osztályok</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>Másoló-mozgató szemantika</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>Hibásan implementált RSA törése</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>Változó argumentumszámú ctor</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>Összefoglaló</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>EPAM: It's gone. Or is it?</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>EPAM: Kind of equal</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>
+
+    <section>
+        <title>EPAM: Java GC</title>
+        	<para>
+                Fealadatleírás
+            </para>
+
+    </section>     
+        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter>           

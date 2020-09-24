@@ -1,0 +1,27 @@
+<authorgroup xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <author>
+        <personname>
+            <surname>Kis</surname>
+            <firstname>Patrik</firstname>        
+        </personname>    
+        <affiliation>
+            <shortaffil>Hallgató, DE.</shortaffil>
+            <jobtitle>Hallgató</jobtitle>
+            <orgname>Debreceni Egyetem</orgname>
+            <orgdiv>Informatikai Kar</orgdiv>
+            <address>
+                <email>kis.patrik@mailbox.unideb.hu</email>
+                <email>kisp13@gmail.com</email>
+            </address>
+        </affiliation>
+        <address>
+            <street>Gerecsehida utca 31.</street>
+            <city>Budapest</city>
+            <postcode>1171</postcode>
+            <country>Magyarország</country>
+            <email>kis.patrik@mailbox.unideb.hu</email>
+            <otheraddr>
+            </otheraddr>
+        </address>
+    </author>   
+</authorgroup>
