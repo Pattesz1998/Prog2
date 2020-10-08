@@ -9,7 +9,81 @@
     <section>
         <title>Liskov helyettesítés sértése</title>
         	<para>
-                Fealadatleírás
+            Írjunk olyan OO, leforduló Java és C++ kódcsipetet, amely megsérti a Liskov elvet! Mutassunk rá a megoldásra: jobb OO tervezés.
+ https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog2_1.pdf"(93-99 fólia) (számos példa szerepel az elv megsértésére az UDPROG repóban, lásd pl. source/binom/BatfaiBarki/madarak/)
+            </para>
+            <para>
+            A Liskov elv lényege az objektumorientált programok helyes tervezése. A könnyű érthetőség kedvéért egy példán keresztül nézzük meg ezt. Vegyük például azt hogy van egy madár osztályunk. 
+            Ebben létrehozunk egy tulajdonságot ami kimondja hogy a madarak tudnak repülni. Ez után ha származtatunk két osztályt a
+            madár osztályból, legyen egy sas és egy pingvin osztály, akkor az megsérti a liskov elvet. A elv szerint
+            ugyanis rossz a tervezés. Ez abból derül ki hogy mivel származtatott osztályról van szó a pingvin osztály
+            megkapja a reülés tulajdonságot. Ez viszont hiba, mivel a pingvin nem tud repülni. Ha nem akarjuk
+            megsérteni az elvet akkor a megoldás az hogy újra kell tervezni a programot. Ezt például úgy lehet megtenni
+            ha a repülés tulajdonságát elkülönítjük egy repülo madarak osztályba és ez után a sas a repülő madarak
+            osztályába fog tartozni a pingvin pedig csak a madarak osztályába. Így a tervezés már jó lesz és nem lesz megsérve a Liskov elv.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            class Madar {
+public void repul() {};
+};
+class Program {
+public void fgv ( Madar madar ) {
+madar.repul();
+}
+};
+class Sas extends Madar
+{};
+class Pingvin extends Madar
+{};
+class Liskov{
+public static void main(String[] args)
+{
+Program kod = new Program();
+Madar mad = new Madar();
+kod.fgv ( mad );
+Sas sass = new Sas();
+kod.fgv ( sass );
+Pingvin pingvinn = new Pingvin();
+kod.fgv ( pingvinn );
+}
+}
+
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            class Madar {
+public:
+virtual void repul() {};
+};
+class Program {
+public:
+void fgv ( Madar &madar ) {
+madar.repul();
+}
+};
+class Sas : public Madar
+{};
+class Pingvin : public Madar
+{};
+int main ( int argc, char **argv )
+{
+Program program;
+Madar madar;
+program.fgv ( madar );
+Sas sas;
+program.fgv ( sas );
+Pingvin pingvin;
+program.fgv ( pingvin );
+}
+
+
+            ]]>
+            </programlisting>
             </para>
 
     </section>
@@ -17,17 +91,139 @@
     <section>
         <title>Szülő-gyerek</title>
         	<para>
-                Fealadatleírás
+            Írjunk Szülő-gyerek Java és C++ osztálydefiníciót, amelyben demonstrálni tudjuk, hogy az ősön keresztül csak az ős üzenetei küldhetőek!
+            https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog2_1.pdf (98. fólia)
             </para>
+            <para>
+             A feladat megoldása során szükség van két osztályra a kódban ahhoz hogy bemutathassuk a feladatot. 
+            Az egyik osztály az ős osztály lesz, ennek a neve <command> Szulő </command>. A másik osztály egy származtatott osztály amely a
+            <command>Gyerek</command> nevet kapta.
+            </para>
+            <para>
+            Az ős osztály lényege hogy egy általánosabb egységet hozzunk létre, amely egy nagyobb egységbe zárja a
+            kódban létrehozott példányokat. Így a benne szereplő tulajdonságok egy tágabb tartományt hoznak létre.
+            Ilyen például az, ha egy programban le akarjuk modellezni az emlosöket. Az emlős lesz az ős osztály,amely
+            egy tágabb tartomány, és minden benne szereplő tulajdonság igaz lesz az emlősökre.
+            </para>
+            <para>
+            A származtatott osztály egy szűkebb tartomány, amely már több megkötést tartalmaz, viszont rendelkezik az
+            ős osztály tulajdonságaival is. Erre példa ha mondjuk származtatott osztályként létrehozunk egy ember
+            vagy delfin osztályt. Mindkettő több megkötést tartalmaz mint az emlős, de akár az embert, akár a delfint
+            nézzük mind a kettő rendelkezik az emlős osztály tulajdonságaival is.
+            </para>
+            <para>
+            A feladat megoldása során egy egyszerűbb példa kerül bemutatásra. Egyszer lesz nekünk, a korábban már említett Szulő és Gyerek
+            osztály. Az ős osztály a szülő lesz, a származtatott osztály pedig a gyerek. A gyerek osztály tudja használni
+            a szülő osztály metódusát is, viszont a szülő nem tudja a gyerekét.
+            </para>
+            <para>
+            Most pedig nézzük meg a kódokat. Először is a Java nyelvű megvalósítást:
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            class Szulo
+{
+public void szulo_vagyok()
+{
+System.out.println("Én vagyok a szülö.");
+}
+};
+class Gyerek extends Szulo
+{
+public void gyerek_vagyok()
+{
+System.out.println("Én vagyok a gyerek.");
+}
+public static void main(String[] args)
+{
+Szulo apa = new Szulo();
+Gyerek joska = new Gyerek();
+apa.szulo_vagyok();
+joska.gyerek_vagyok();
+joska.szulo_vagyok();
+apa.gyerek_vagyok(); //ez így nem m˝uködik mivel az ˝os ←-
+osztály nem fér hozzá a származtatott osztályhoz ezáltal ←-
+a benne lév˝o metódusokhoz sem
+}
+};
 
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Létrehozásra kerül a két osztály, majd a mainben mindegyik osztályból egy-egy példány. Láthatjuk hogy a
+kódban jelölve van a származtatás. A Gyerek osztály létrehozásánál ott van az <command>extends</command> kulcsszó. Ez arra
+szolgál hogy mögötte feltüntessünk egy másik osztályt, amely által az meg lesz jelölve ősnek. Mivel van  
+ős osztálya ő egy származtatottá válik. Végül személtetés céljából a példányokra meghívásra kerül, 
+a szülő osztály, valamint a gyerek osztály metódusa is. A gyerek osztály tudja használni a szülő
+osztály függvényét, míg a szülő nem tudja használni a gyerek osztályét.
+            </para>
+            <para>
+            Azonban, ha mégis megpróbáljuk az ős osztálynak a példányára meghívni a származtatott osztály függvényét akkor 
+az hibát fog eredményezni.
+            </para>
+            <para>
+             Most pedig következzen a C++-os megoldás. Látható hogy lényeges különbség nincs a Javahoz képest. Ami
+            változik az mindösszesen annyi, hogy másként van megjelölve a származtatás. A futás során is ugyanarra az eredményre
+            jutunk.
+            </para>
+            <para>
+            <programlisting language="c++">
+            <![CDATA[
+            #include <iostream>
+class Szulo
+{
+public:
+void szulo_vagyok()
+{
+std::cout << "Én vagyok a szülö." << std::endl;
+}
+};
+class Gyerek : public Szulo
+{
+public:
+void gyerek_vagyok()
+{
+std::cout << "Én vagyok a gyerek." << std::endl;
+}
+};
+int main ( int argc, char **argv )
+{
+Szulo szulo;
+Gyerek gyerek;
+szulo.szulo_vagyok();
+gyerek.gyerek_vagyok();
+gyerek.szulo_vagyok();
+//szulo.gyerek_vagyok(); ez így nem m˝uködik mivel az ˝os ←-
+osztály nem fér hozzá a származtatott osztályhoz ezáltal a ←-
+benne lév˝o metódusokhoz sem
+}
+            ]]>
+            </programlisting>
+            </para>
     </section> 
 
     <section>
         <title>Anti OO</title>
         	<para>
-                Fealadatleírás
+                A BBP algoritmussal a Pi hexadecimális kifejtésének a 0. pozíciótól számított 106, 107, 108 darab jegyét
+            határozzuk meg C, C++, Java és C# nyelveken és vessük össze a futási idoket!
+            https://www.tankonyvtar.hu/-hu/tartalom/tkt/javat-tanitok-javat/apas03.html#id561066
             </para>
-
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="source/img/C++pelda.png" scale="70" />
+                </imageobject>
+            </mediaobject>
+            </para>
+            <para>
+            A táblázat alapján látható hogy a futási idő eredményei változnak attól függően, hogy milyen program
+            nyelvet használunk. A leggyorsabb a Java nyelven megírt kód volt, bár ez nem meglepő hiszen az beépített
+            optimalizálóval rendelkezik a kódok gyorsítása érdekében. Leglasabb eredményt pedig a C nyelv hozott
+            ahol a 10 a 8-on eredmény kiszámításához több mint 3 perc kellett.
+            </para>
     </section>
 
     <section>
@@ -49,8 +245,28 @@
     <section>
         <title>Ciklomatikus komplexitás</title>
         	<para>
-                Fealadatleírás
+                Számoljuk ki valamelyik programunk függvényeinek ciklomatikus komplexitását! Lásd a fogalom tekintetében a https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog2_2.pdf(77-79 fóliát)!
             </para>
+            <para>
+             A ciklomatikus komplexitás lényege hogy egy képlet alapján, számban kifejezve megmondja egy adott
+            programkódról annak összetettségét. A képlet úgy épül fel, hogy egy gráfot képezünk a kódból majd ennek
+            segítségével számolunk. Ha kész a gráf akkor a következőt kell tenni. A gráf éleinek a számából ki kell
+            vonni a csúcspontok számát majd hozzá kell adni a program egységek számánk kétszeresét.
+            </para>
+            <para>
+            Egyszerű programok esetében akár manuálisan is ki lehet számolni a komplexitást, de összetettebb programok esetében már egyszerűbb egy segédprogrammal vagy online fellelhető kalkulátorral számolni. 
+            Most az utóbbi esetet használjuk. Ha ellátogatunk a http://www.lizard.ws/#try nevű oldalra akkor ott online is ki lehet számoltatni egy kódnak a komplexitását. Ennek a feladatnak az elvégzéséhez a Binfa java kódján lett
+            lefuttatva az ellenörzés. Az eredmény az alábbi lett.
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="source/img/eredmeny.png" scale="70" />
+                </imageobject>
+            </mediaobject>
+            </para>
+           
+       
 
     </section> 
 
@@ -79,4 +295,4 @@
     </section>    
         
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
-</chapter>                
+</chapter>
