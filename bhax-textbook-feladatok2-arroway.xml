@@ -4,63 +4,583 @@
         <keywordset>
             <keyword/>
         </keywordset>
-    </info>
-
-    <section>
-        <title>A BPP algoritmus Java megvalósítása</title>
-        <para>
-            Ez már a Prog2, de előre dolgozhatsz a nyári szünetben!
-        </para>
-        <para>
-            Megoldás forrása: <link xlink:href="https://regi.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apas03.html">https://regi.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apas03.html</link>               
-        </para>
-    </section>        
-
-    <section>
-        <title>Java osztályok a Pi-ben</title>
-        <para>
-            Az előző feladat kódját fejleszd tovább: vizsgáld, hogy Vannak-e Java osztályok a Pi hexadecimális kifejtésében!
-        </para>
-
-    </section>
-
-    <section>
-        <title>INNEN KEZDŐDNEK A SYLLABUS SZERINTI FELADATOK</title>
-        <para>
-            Ha szükséged van feladatleírásra  <link xlink:href="https://drive.google.com/drive/folders/1NRZkvRTdbZHy0lanTcksEpc9VXlSFlYZ">itt van a syllabus</link> 
-        </para>
-
-    </section>          
-        
+    </info>        
     <section>
         <title>OO szemlélet</title>
             <para>
-                Fealadatleírás
+            A módosított polártranszformációs normális generátor beprogramozása Java nyelven. Mutassunk rá,
+            hogy a mi természetes saját megoldásunk (az algoritmus egyszerre két normálist állít elő, kell egy
+            példánytag, amely a nem visszaadottat tárolja és egy logikai tag, hogy van-e tárolt vagy futtatni kell
+            az algot.) és az OpenJDK, Oracle JDK-ban a Sun által adott OO szervezés ua.!
+            </para>
+            <para>
+            Lásd még fóliák!
+            </para>
+            <para>
+            Ismétlés: <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_5.pdf">https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_5.pdf</link> (16-22 fólia)
+            </para>
+            <para>
+            Ugyanezt írjuk meg C++ nyelven is! (lásd még UDPROG repó: source/labor/polargen)
+            </para>
+            <para> Megoldás forrása: <link xlink:href="https://github.com/Pattesz1998/Prog2/blob/master/polargen.java"/></para>
+            <para>
+            Első Prog2-es Hello, Arroway fejezethez tartozó feladatunk: a módosított polártranszformációs normális generátor Java nyelvre történő megírása.
+            Működése rendkívül egyszerű: legenerál két pseudorandom számot melyből az egyiket kiírjuk a standard outputra, míg a másikat a <command>"double tarolt"</command> változónkban tároljuk el.
+            </para>
+            <para>
+            Ezek a pseudorandom számok kísértetiesen hasonlítanak a random (véletlen) számokra, különbségük csupán abban rejlik, ezen számok a véletlen számoktól eltérően egy matematikai képlet
+            segítségével kerülnek generálásra egy szorzat részletéből, így ez visszafejthető.
+            </para>
+            <para>
+            A Java polártranszformációs generátor két ilyen random számot hoz létre, melyből az egyik tárolásra kerül.
+            A program működési elvét személéve, láthatjuk, hogy a <command>kovetkezo</command> függvény 10 alkalommal hívódik meg a programunk futása során.
+            A függvény elvégzi magát a generálást, akkor ha nincsen tárolt szám, majd kiírja az eredményt.
+            Amennyiben van korábban eltárolt számunk, abban az esetben nem történik meg a generálás, csak kiírjuk a már eltárolt számot.
+            Ezen megoldási mód azért praktikus, mivel így ugyan a program futtatása során 10 alkalommal kerül kiíratásra szám, azonban generálás viszont mindösszesen 5
+            alkalommal megy végbe (ezáltal is gyorsítva a folyamatot.). Ilyenkor a processzornak nem kell végigmennie minden egyes alkalommal a generálás lépésein.
+            <programlisting language="java">
+            <![CDATA[
+            public class polargen {
+    boolean nincsTarolt = true;
+    double tarolt;
+    
+    public polargen() {
+        nincsTarolt = true;
+    }
+    
+    public double kovetkezo(){
+        if(nincsTarolt){
+        double u1, u2, v1, v2, w;
+        do{
+            u1 = Math.random();
+            u2 = Math.random();
+            v1 = 2 * u1 - 1;
+            v2 = 2 * u2 - 1;
+            w = v1 * v1 + v2 * v2;
+        } while(w > 1);
+        double r = Math.sqrt((-2 * Math.log(w)) / w);
+        tarolt = r * v2;
+        nincsTarolt = !nincsTarolt;
+        return r * v1;
+    }
+    else {
+        nincsTarolt = !nincsTarolt;
+        return tarolt;
+    }
+}
+
+
+    public static void main(String[] args){
+        polargen g = new polargen();
+        for (int i = 0; i < 10; ++i){
+            System.out.println(g.kovetkezo());
+        }
+    }
+}
+
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            <command>A programunk futtatásakor az alábbi kimenetet kapjuk eredményül:</command>
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="source/polargen.png" scale="80" />
+                </imageobject>
+        </mediaobject>
+            </para>
+            <para>
+            A következőkben meg fogjuk vizsgálni, hogy mi is a különbség a JDK -ban lévő generátor, valamint a mi generátorunk között. 
+            A JDK-s generátor javarészt úgy működik, mint a mi, módosított polártranszformációs generátorunk, viszont a különbség abban rejlik, hogy a JDK esetében
+            gondoltak a párhuzamosítás megvalósítására is. Ezt mi sem támasztja alá jobban, mintsem az, hogy az osztályban (classban) lévő metódus létrehozásánál a <command>synchronized</command>
+            kulcsszóval találkozhatunk. Feladata: a párhuzamos futások felügyelete, melyet úgy valósít meg, hogy amíg az egyik szálon fut maga a generálás, addig a többi szál számára
+            nem teszi lehetővé a generáláshoz való hozzáférést.
+            </para>
+            <para>
+            Létezik azonban egy másik megoldás, mely szintén része a JDK -nak. Ez a megoldás a <command> StrictMath </command> osztályt használja.
+            Erre azért van szükségünk, hogy amennyiben bármilyen környezetben van implementálva a kódunk, az eredmény mindig azonos legyen, hiszen ha csak a Math osztályt használnánk, abban az esetben az eredmény a környezettől függően változhatna.
             </para>
 
     </section>
-
-
 	<section>
         <title>Homokózó</title>
         	<para>
-                Fealadatleírás
+            Írjuk át az első védési programot (LZW binfa) C++ nyelvről Java nyelvre, ugyanúgy működjön! 
+            Mutassunk rá, hogy gyakorlatilag a pointereket és referenciákat kell kiirtani és minden máris működik.
             </para>
+            <para>
+            A tananyag elkészítését az EFOP-3.4.3-16-2016-00021 számú projekt támogatta. 
+            A projekt az Európai Unió támogatásával, az Európai Szociális Alap társfinanszírozásával valósult meg.
+            </para>
+            <para>
+            (erre utal a feladat neve, hogy Java-ban minden referencia, nincs választás, hogy mondjuk egy
+            attribútum pointer, referencia vagy tagként tartalmazott legyen).
+            </para>
+            <para>
+            Miután már áttettük Java nyelvre, tegyük be egy Java Servletbe és a böngészőből GET-es kéréssel
+            (például a böngésző címsorából) kapja meg azt a mintát, amelynek kiszámolja az LZW binfáját!
+            </para>
+            <para> Megoldás forrása: <link xlink:href="https://github.com/Pattesz1998/Prog2/blob/master/binfa.java"/></para>
+            <para>
+            Maga a LZW binfa program bizonyára mindannyiunknak ismerős lehet a magasszintű programozási nyelvek 1 kurzusról, ahol megírtuk a Binfa C++ os verzióját, template osztály segítségével.
+            A mostani feladatunk szerint az LZW binfa C++ -os forráskódját kell átírnunk Java nyelvre.
+            Mielőtt elkezdenénk megvalósítani a Java nyelvű Binfánkat, fontos tisztázni pár dolgot: A C++ os forráskódunkból ki kell szednünk a pointereket valamint a referenciákat, mivel a Java nyelv esetében
+            minden referenciaként van kezelve, itt nuncsenek pointerek, valamint a program header részében a #include helyett az import kulcsszót kell használnunk.
+            </para>
+            <para>
+            <command> Nézzük is meg magát a megvalósítást: </command>
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            import java.io.PrintWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+class JavaBinfa
+{
+    public JavaBinfa ()
+    {
+    	root = new Node('/');
+    	currentNode = root;
+    }
+  
+    public void insert (char b)
+    {
+       
+        if (b == '0')
+        {
+           
+            if (currentNode.getLeftChild () == null)	
+            {
+                
+                Node n = new Node ('0');
+                
+                
+                
+                currentNode.newLeftChild (n);
+                
+                currentNode = root;
+            }
+            else			
+            {
+                
+                currentNode = currentNode.getLeftChild ();
+            }
+        }
+        
+        else
+        {
+            if (currentNode.getRightChild () == null)
+            {
+                Node n = new Node ('1');
+                currentNode.newRightChild (n);
+                currentNode = root;
+            }
+            else
+            {
+                currentNode = currentNode.getRightChild ();
+            }
+        }
+    }
+    
+   
+    public int getDepth ()
+    {
+    	 	depth = maxDepth = 0;
+    	    recDepth (root);
+    	    return maxDepth - 1;
+    }
+    public double getMean ()
+    {
+    	depth = sumOfMean = numberOfNodes = 0;
+        recMean (root);
+        mean = ((double) sumOfMean) / numberOfNodes;
+        return mean;
+    }
+    public double getVariance ()
+    {
+    	mean = getMean ();
+        sumOfVar = 0.0;
+        depth = numberOfNodes = 0;
 
+        recVar (root);
+
+        if (numberOfNodes - 1 > 0)
+            variance = Math.sqrt (sumOfVar / (numberOfNodes - 1));
+        else
+            variance = Math.sqrt (sumOfVar);
+
+        return variance;
+    }
+
+    public void recDepth (Node  n)
+    {
+        if (n != null)
+        {
+            ++depth;
+            if (depth > maxDepth)
+                maxDepth = depth;
+            recDepth (n.getRightChild ());
+            
+            
+            recDepth (n.getLeftChild ());
+            --depth;
+        }
+    }
+
+
+public void recMean (Node  n)
+{
+    if (n != null)
+    {
+        ++depth;
+        recMean (n.getRightChild ());
+        recMean (n.getLeftChild ());
+        --depth;
+        if (n.getRightChild () == null && n.getLeftChild () == null)
+        {
+            ++numberOfNodes;
+            sumOfMean += depth;
+        }
+    }
+}
+
+public void recVar (Node  n)
+{
+    if (n != null)
+    {
+        ++depth;
+        recVar (n.getRightChild ());
+        recVar (n.getLeftChild ());
+        --depth;
+        if (n.getRightChild () == null && n.getLeftChild () == null)
+        {
+            ++numberOfNodes;
+            sumOfVar += ((depth - mean) * (depth - mean));
+        }
+    }
+}
+    public void printTree (PrintWriter os)
+    {
+        depth = 0;
+        printTree (root, os);
+    }
+
+    class Node
+    {
+      
+        Node (char b)
+        {
+        	if(b == '0' || b == '1')
+        		value = b;
+        	else
+        	value = '/';
+        };
+ 
+        Node getLeftChild () 
+        {
+            return leftChild;
+        }
+        
+        Node getRightChild () 
+        {
+            return rightChild;
+        }
+        
+        void newLeftChild (Node gy)
+        {
+            leftChild = gy;
+        }
+        
+        void newRightChild (Node gy)
+        {
+            rightChild = gy;
+        }
+      
+        char getValue () 
+        {
+            return value;
+        }
+       
+
+        
+        private char value;
+       
+        private Node leftChild;
+        private Node rightChild;
+    };
+
+   
+    Node currentNode;
+    
+    private int depth, sumOfMean, numberOfNodes;
+    private double sumOfVar;
+    
+
+    
+    public void printTree (Node  n, PrintWriter os)
+    {
+        
+        if (n != null)
+        {
+            ++depth;
+            printTree (n.getLeftChild (), os);
+            
+            
+            for (int i = 0; i < depth; ++i)
+                os.print("---");
+            os.print(n.getValue () + "(" + depth + ")\n");
+            printTree (n.getRightChild (), os);
+            --depth;
+        }
+    }
+   
+	protected Node root;
+    protected int maxDepth;
+    protected double mean, variance;
+
+
+    public static void usage ()
+    {
+        System.out.println("Usage: lzwtree in_file -o out_file");
+    }
+
+    public static void  main (String[] args) throws FileNotFoundException, IOException
+    {
+        
+        if (args.length  < 3)
+        {
+            usage ();
+            return;
+        }
+
+        String inFile = args[0];
+
+        
+        if(!args[1].equals("-o"))
+        {
+        	 System.out.println(args[1]);
+        	 usage ();
+             return;
+        }
+
+        
+        java.io.FileInputStream input = new java.io.FileInputStream(new java.io.File(inFile));
+
+        
+        if (input == null)
+        {
+            System.out.println("Nem létezik");
+            usage ();
+            return;
+        }
+        PrintWriter output = new PrintWriter(args[2]);
+
+        byte[] b = new byte[1];		
+        JavaBinfa bincurrentNode = new JavaBinfa();		
+        while (input.read(b) != -1)
+        {
+            if (b[0] == 0x0a)
+            {
+            break;
+            }
+        }
+        
+        boolean inComment = false;
+        while (input.read (b) != -1) 
+        {
+            if (b[0] == 0x3e) 
+            {			
+                inComment = true;
+                continue;
+            }
+            if (b[0] == 0x0a) 
+            {			
+                inComment = false;
+                continue;
+            }
+            if (inComment)
+            {
+                continue;
+            }
+            if (b[0] == 0x4e)
+            {
+                continue;
+            }
+            for (int i = 0; i < 8; ++i)
+            {
+                if ((b[0] & 0x80) != 0)
+                {
+                    bincurrentNode.insert('1');
+                } 
+                else
+                {
+                    bincurrentNode.insert('0');
+                }
+                b[0] <<= 1;
+            }
+        }
+        
+        bincurrentNode.printTree(output);		
+
+        output.print("depth " + bincurrentNode.getDepth () + "\n");
+        output.print("mean " + bincurrentNode.getMean () + "\n");
+        output.print("var " + bincurrentNode.getVariance () + "\n");
+
+        output.close ();
+        input.close ();
+
+      
+    }
+
+    
+};
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            A kódunkat alaposabban megfigyelve láthatjuk a Java nyelv egyik erősségét, mivel ő automatikus szemétgyűjtőt tartalmaz (ún. Garbage Collector.)
+            Ez arról gondoskodik, hogy a már nem használt objektum helyét felszabadítja a memóriában.
+            Maga a Garbage Collector nem található meg a C++ nyelvben, ott a tárhely felszabaításának céljából a destruktorokat kell használnunk.
+            </para>
     </section>
 
     <section>
         <title>„Gagyi”</title>
         	<para>
-                Fealadatleírás
+            Az ismert formális „while” tesztkérdéstípusra adj a szokásosnál
+            (miszerint x, t az egyik esetben az objektum által hordozott érték, a másikban meg az objektum
+            referenciája) „mélyebb” választ, írj Java példaprogramot mely egyszer végtelen ciklus, más x, t
+            értékekkel meg nem! A példát építsd a JDK Integer.java forrására , hogy a 128-nál inkluzív objektum
+            példányokat poolozza!
             </para>
-
+            <para> Megoldás forrása: <link xlink:href="https://github.com/Pattesz1998/Prog2/blob/master/gagyi.java"/></para>
+            <para>
+            A következő feladatban egy roppant egyszerű példán keresztül bemutatjuk, hogy a Java nyelben, az Integer osztályban
+            a gyorsítótárban előre legenerált számok szerepelnek (-128 és 127 között). 
+            Ez abból is látszik, hogy mind a két Integer típusú változó értéke 6 ám a program még sem lép be a végtelen ciklusba.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            private static class IntegerCache {
+static final int low = -128;
+static final int high;
+static final Integer cache[];
+static {
+    // high value may be configured by property
+int h = 127;
+String integerCacheHighPropValue =
+sun.misc.VM.getSavedProperty("java.lang.Integer. ←-
+IntegerCache.high");
+if (integerCacheHighPropValue != null) {
+try {
+int i = parseInt(integerCacheHighPropValue);
+i = Math.max(i, 127);
+// Maximum array size is Integer.MAX_VALUE
+h = Math.min(i, Integer.MAX_VALUE - (-low) -1);
+} catch( NumberFormatException nfe) {
+// If the property cannot be parsed into an int, ←-
+ignore it.
+}
+}
+high = h;
+cache = new Integer[(high - low) + 1];
+int j = low;
+for(int k = 0; k < cache.length; k++)
+cache[k] = new Integer(j++);
+// range [-128, 127] must be interned (JLS7 5.1.7)
+assert IntegerCache.high >= 127;
+}
+private IntegerCache() {}
+}
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Ez azért van mert a ciklus feltétel vizsgálatakor, az Integer osztály esetében a memóriacím vizsgálata történik, ebből kifolyólag pedig, mivel a 6-os előre le van generálva,így a két példány ugyanarra a memóriacímre
+            címez, így az utolsó feltétel nem teljesül, tehát nem fogunk belépni a ciklusba.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            public class gagy {
+public static void main(String[] args) {
+Integer x = 6;
+Integer t = 6;
+System.out.println(x);
+System.out.println(t);
+while (x <= t && x >= t && t != x) ;
+}
+}
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Mi történik abban az esetben, ha olyan számokat választunk amelyek már nincsenek előre legenerálva. 
+            Ha például a megadott két értéket átírjuk 600-ra, abban az esetben az összes feltétel teljesülni fog, így be fogunk lépni a végtelen ciklusba.
+            Ez azért következik be, mivel két új példányt hoz létre a program amiknek a memóriacíme már nem egyezik meg és így az utolsó feltétel is teljesülni fog.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            public class gagy {
+public static void main(String[] args) {
+Integer x = 600;
+Integer t = 600;
+System.out.println(x);
+System.out.println(t);
+while (x <= t && x >= t && t != x) ;
+}
+}
+            ]]>
+            </programlisting>
+            </para>
     </section>
 
     <section>
         <title>Yoda</title>
         	<para>
-                Fealadatleírás
+            Írjunk olyan Java programot, ami java.lang.NullPointerEx-el leáll, ha nem követjük a Yoda conditions-t!
+            <link xlink:href="https://en.wikipedia.org/wiki/Yoda_conditions"/>
+            </para>
+            <para> Megoldás forrása: <link xlink:href="https://github.com/Pattesz1998/Prog2/blob/master/yoda.java"/></para>
+            <para>
+            A feladat lényege hogy megmutassuk mi is az a Yoda conditions. 
+            Ezt könnyű szemléltetni egy egyszerű példán keresztül. 
+            Fel kell vennünk egy null értékű változót és egy feltétel vizsgálatot.
+            A lényeg az lesz, hogy ha egy null pointerre hívunk meg egy feltétel vizsgálatot, akkor az java.lang.NullPointerEx-el leáll, tehát hibát kapunk eredményül.
+            Abban az esetben viszont, ha a Yoda conditions-t követjük és felcseréljük a sorrendet akkor a programunk hiba nélkül fog lefutni.
+            Az mindegy hogy egy konstansra vagy literálra hívjuk meg a vizsgálatot a lényeg az hogy ne null pointer legyen.
+            Az eredmény amit vissza fog adni, az false lesz, viszont nem történik hiba,mivel nem a null pointerre hívtuk meg a feltétel vizsgálatot, hanem csak paraméterként adtuk át a metódusnak.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            public class Yoda
+{
+public static void main (String[]args)
+{
+String myString = null;
+if (myString.equals("proba"))
+{
+System.out.println("egyenlő a probaval");
+}
+/*if ("proba".equals(myString))
+{
+System.out.println("egyenlő a null értékkel");
+}*/
+}
+}
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Amennyiben paraméterként van átadva a metódusnak, abban az esetben a vizsgálat eredménye <command>false</command> lesz.
             </para>
 
     </section>
@@ -68,7 +588,102 @@
     <section>
         <title>Kódolás from scratch</title>
         	<para>
-                Fealadatleírás
+            Induljunk ki ebből a tudományos közleményből: <link xlink:href="http://crd-legacy.lbl.gov/~dhbailey/dhbpapers/bbpalg.pdf"/> 
+            és csak ezt tanulmányozva írjuk meg Java nyelven a BBP algoritmus megvalósítását!
+            Ha megakadsz, de csak végső esetben: <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitokjavat/apbs02.html#pi_jegyei"/>
+            (mert ha csak lemásolod, akkor pont az a fejlesztői élmény marad ki, melyet szeretném, ha átélnél).
+            </para>
+            <para>
+            A BBP alogritmus arra szolgál, hogy a Pi értékét meghatározzuk, hexadecimális formában a d+1. helytől.
+            Mindezt úgy tesszük, hogy nincs tudomásunk a korábbi jegyekről.
+            </para>
+            <para>
+            A program PiBBP nevű függvénye arra szolgál, hogy segítségével kiszámítsuk a {16ˆd Pi} = {4*{16ˆd S1} - 2*{16ˆd S4}
+            - {16ˆd S5} - {16ˆd S6}} képletet, ahol is a {} a törtrészt jelöli, továbbá ezen függvényben történik meg
+            a hexadecimális számrendszerbe történő átváltása és az eredmény belehelyezése a bufferbe is. 
+            Az átváltás és a bufferbe helyezés mind a while ciklusban történnek meg.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            public PiBBP(int d) {
+double d16Pi = 0.0d;
+double d16S1t = d16Sj(d, 1);
+double d16S4t = d16Sj(d, 4);
+double d16S5t = d16Sj(d, 5);
+double d16S6t = d16Sj(d, 6);
+d16Pi = 4.0d*d16S1t - 2.0d*d16S4t - d16S5t - d16S6t;
+d16Pi = d16Pi - StrictMath.floor(d16Pi);
+StringBuffer sb = new StringBuffer();
+Character hexaJegyek[] = {’A’, ’B’, ’C’, ’D’, ’E’, ’F’};
+while(d16Pi != 0.0d) {
+int jegy = (int)StrictMath.floor(16.0d*d16Pi);
+if(jegy<10)
+sb.append(jegy);
+else
+sb.append(hexaJegyek[jegy-10]);
+d16Pi = (16.0d*d16Pi) - StrictMath.floor(16.0d*d16Pi);
+}
+d16PiHexaJegyek = sb.toString();
+}
+            ]]>
+            </programlisting>
+            </para>
+            <para>  
+            A következő metódus a d16Sj metódus lesz. 
+            Ez egy segéd metódus, mely arra szolgál, hogy a fenti képletben lévő S1, S4, S5 és S6 értéket kiszámítsa.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            public double d16Sj(int d, int j) {
+double d16Sj = 0.0d;
+for(int k=0; k<=d; ++k)
+d16Sj += (double)n16modk(d-k, 8*k + j) / (double)(8*k + j);
+return d16Sj - StrictMath.floor(d16Sj);
+}
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Az utolsó metódus a main-en kívül amiről szót kell ejtenünk, az a n16modk metódus. 
+            Ez a metódus bináris hatványozást végez, azért hogy a S értékeket ki lehessen számítani.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            public long n16modk(int n, int k) {
+int t = 1;
+while(t <= n)
+t *= 2;
+long r = 1;
+while(true) {
+if(n >= t) {
+r = (16*r) % k;
+n = n - t;
+}
+t = t/2;
+if(t < 1)
+break;
+r = (r*r) % k;
+}
+return r;
+}
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Végül a main függvényben egy PiBBP objektum létrehozása és a d értékének meghatározása történik, ami jelen helyzetben 1000000. 
+            Így tehát a Pi értékei az 1000001. helytől kezdődően lesznek kiszámítva. 
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            public static void main(String args[]) {
+System.out.println(new PiBBP(1000000));
+}
+            ]]>
+            </programlisting>
             </para>
 
     </section>
@@ -76,8 +691,28 @@
     <section>
         <title>EPAM: Java Object metódusok</title>
         	<para>
-                Fealadatleírás
+            Mutasd be a Java Object metódusait és mutass rá mely metódusokat érdemes egy saját osztályunkban felüldefiniálni és miért. (Lásd még Object class forráskódja)
             </para>
+            <para>Az Object osztály esetében érdemes megemlítenünk,hogy minden osztály, ebből az osztályból származik, ez áll a képzeletbeli piramisunk tetején. 
+            Az object osztály úgynevezett ősosztály, mely minden Java osztály ősének metódusa.
+            Ez lényegében azt jelenti, hogy a metódussal minden Java osztály rendelkezik.
+           </para>
+             <para>Az Object osztály definiálja az alpvető működést, mely minden objektumnál
+            rendelkezésre áll. 
+            Legfontosabb metódusai a következők: clone, equals, hashCode, finalize, toString, getClass metódusok.
+            </para>
+            <para>
+            A <command> clone </command> egy metódus a Java programozási nyelvben, melyet az objektumok másolására használunk.
+            A Java-ban az objektumokat referenciaváltozókon keresztül manipulálják, és nincs operátor az objektum lemásolásához - a hozzárendelési operátor másolja a referenciát, nem az objektumot. A klón () módszer biztosítja ezt a hiányzó funkciót.
+            Azoknak az osztályoknak, amelyek másolási funkciót akarnak, végre kell hajtaniuk valamilyen módszert. Bizonyos mértékben ezt a funkciót a(z) <command> Object.clone() </command> biztosítja.
+            A <command> equals </command> metódus feladata, hogy összehasonlítson két megadott karakterláncot a karakterláncok tartalma alapján. 
+            Amennyiben bármely két karakter nem egyezik meg, akkor "hamis" értéket fogunk eredményül kapni. Amennyiben az összes karakter megegyezik, abban az esetben "igaz" értéket kapunk vissza.
+            A Stringequals() metódus felülírja az Objektum osztály equals metódusát.
+            A <command> hashCode </command> metódus feladata 
+
+            </para>
+
+
 
     </section>
 

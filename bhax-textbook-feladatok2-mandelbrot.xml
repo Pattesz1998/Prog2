@@ -9,32 +9,155 @@
     <section>
         <title>Reverse engineering UML osztálydiagram</title>
         	<para>
-                Fealadatleírás
+            UML osztálydiagram rajzolása az első védési C++ programhoz. Az osztálydiagramot a forrásokból
+generáljuk (pl. Argo UML, Umbrello, Eclipse UML) Mutassunk rá a kompozíció és aggregáció
+kapcsolatára a forráskódban és a diagramon, lásd még: https://youtu.be/Td_nlERlEOs.
             </para>
-
+            <figure>
+	<title>Binfa UML osztálydiagram</title>
+	<mediaobject>
+                <imageobject>
+                    <imagedata fileref="binfa.png" format="PNG" scale="50"/>
+                </imageobject>
+    </mediaobject>
+	</figure>
+    <para>
+    A feladat megoldása során a Visual Paradigm - ezt a programot ajánlom mindenkinek a feladat megoldásához - programot használtam a kódból való <command>UML</command> diagram elkészítésére.
+    Az UML diagrammok lényege az, hogy egy ábrában szemléltesse egy adott program tervezetét. 
+    A Visual Paradigm kiválóan alkalmasak arra, hogy segítségével megtervezzünk egy komplett programot, majd a diagramm alapján elkészítsük annak kódbéli
+verzióját. Létrehozás esetén kétféle verzió létezik: Az egyik az, hogy a terv alapján kézzel megírjuk a kódot, a másik esetben pedig az ábra alapján generáljuk a kódot. 
+Ennyire előre azért ne fussunk, hiszen erről az ábra alapján történő kódgenerálásról a következő feladat során ejtek bővebben szót.
+    </para>
+    <para>
+    Jelen feladatban, egy már kész kódból generáltuk le magát a diagrammot. Ez hasznos lehet abban az esetben,
+ha például egy bemutató alakalmával el kell magyarázni egy adott program működését. A kód alapján generálni
+kell egy diagrammot, majd az így legenerált, könnyen átlátható ábrán keresztül könnyedén prezentálhatjuk a programunk felépítését.
+    </para>
+    <para>
+    Itt a védési programból (LZWBinfa kódból) készítettük el a diagrammot.
+A diagrammon láthatjuk, hogy milyen osztályokból épül fel maga a program és azok között milyen kapcsolat van, továbbá látható az is, hogy az osztályok milyen változókkal és metódusokkal rendelkeznek. 
+Egy osztály két részre van osztva a diagrammon. A felső részben található a változók listája, az alsó részben pedig a metódusok listája.
+Minden változó és metódus előtt látható egy +, - vagy # jel. Ez jelöli azt, hogy milyen a hozzáférhetősége.
+A + jelenti a public-ot, a - a private-ot, a # pedig a protected jelzőt jelenti. 
+    </para>
+    <para>
+    A kapcsoltokat, nyilak segítségével jelöljük az osztályok között. Elsőnek vegyük a sima nyilat. Ez az asszociációt
+jelöli a két osztály között. Látható hogy a nyílra rá van írva a -fa felirat. Ez azt jelenti, hogy azon keresztül
+áll fent a kapcsolat. A következo nyíl a szaggatott. Ez a dependency, vagyis függőség nyíl. Ez azt jelenti,
+hogy az LZWBinfa osztály függ a csomópont osztálytól, vagyis ha a Csomópont osztály megváltozik akkor
+vele együtt változik az LZWBinfa osztály is. Végezetül pedig lássuk az utolsó nyilat. Ez a kompozíciót jelenti. Lényegében két osztály kompozícióban van, ha a Csomópont osztály csak az LZWBinfa osztállyal
+együtt tud létezni, tehát, ha az LZWBinfa osztály törlésre kerül akkor a Csomópont osztály is elveszíti a
+létjogosultságát, mivel a csomópont nem létezhet a binfa nélkül.
+    </para>
+    <para>
+    Létezik azonban egy másik kapcsolat fajta is, ami a jelen diagrammunkon nem szerepel, ez pedig az aggregáció. Az aggregáció nagyon haszonlít a kompozícióra, különbség csupán annyi, hogy ott a részosztálynak akkor is megvan a
+létjogosultsága ha az osztály eltűnik.
+    </para>
     </section>
 
     <section>
         <title>Forward engineering UML osztálydiagram</title>
         	<para>
-                Fealadatleírás
+            UML-ben tervezzünk osztályokat és generáljunk belole forrást!
             </para>
-
+        <para>
+        Ebben a feladatban egy UML diagrammból kell kódot készíteni. (ez a feladat pontosan az előző ellentétje.) Az UML diagrammot a Visual Paradigm
+programmal készítjük el majd ezt követően kódot generálunk belőle. Első lépésként, meg kell adnunk az osztályokat, majd
+belehelyezni a kívánt változókat és metódusokat. Miután ez megvan, be kell jelölnünk a közöttük lévő
+kapcsolatokat, majd elvégezzük magát a kód generálást.
+        </para>
+        <para>
+        A kapott eredmény:
+        </para>
+        <figure>
+	<title>UML forrás generálás</title>
+	<mediaobject>
+                <imageobject>
+                    <imagedata fileref="UML.png" format="PNG" scale="50"/>
+                </imageobject>
+    </mediaobject>
+	</figure>
     </section>
 
     <section>
         <title>Egy esettan</title>
         	<para>
-                Fealadatleírás
+                A BME-s C++ tankönyv 14. fejezetét (427-444 elmélet, 445-469 az esettan) dolgozzuk fel!
             </para>
-
+            <para>
+            Megoldás forrása: <link xlink:href="https://github.com/Pattesz1998/Prog2/tree/master/Esettan"/>
+            </para>
+            <para>
+            A könyv esettana egy számítógépes bolt nyilvántartó rendszeréhez készít egy programot, melyben eltárolásra kerülnek a boltban megtalálható termékek a neve, típusa, beszerzési ára, beszerzési ideje, és számított értékként
+megadja az eladási árát valamint az eszköz korát. A könyv részletesen tárgyalja a program tervezésének
+a menetét, hogy miként kell felépíteni a programot objektumorientált formában és milyen részeket tartalmazzon maga a programkódunk. A tervezetet UML diagram formájában bemutatja számunkra, majd lépésről lépésre kitárgyalja a kód
+felépítését.
+            </para>
+            <para>
+            A tervezet alapján létre kell hoznunk egy ős osztály, amely az általános tulajdonságokat tárolja minden - a boltban fellelhető - termékről.
+Mivel a származtatott osztályok módosításokat eszközölnek, így virtuális metódusok használata
+szükséges számunkra. Tökéletes példa egy ilyen megvalósításra, ha mondjuk az eszköz típusát tároljuk el. Ezt az alábbi metódus segítségével
+tudjuk megtenni: virtual std::string GetType() const = 0;. Mivel a változók protectedként vannak létrehozva
+így a hozzáférésükhöz szükségünk van metódusok meglétére is.
+            </para>
+            <para>
+            A származtatott osztályok arra szolgálnak, hogy egy új eszköz esetén kezelni tudják annak értékeit.
+            Mivel az adatok olvasása, illetve írása adatfolyamon keresztül zajlik, így miuán eldöntésre kerül hogy milyen típusú
+eszközrol van szó, a vezérlés átkerül a származtatott osztályokba és azok elvégzik a beolvasást. 
+            </para>
+            <para>
+            A könyvben részletesen bemutatásra kerül továbbá az is, hogy az adatfolyamban miként vannak tárolva az értékek, azonban most nem
+erre térnék ki. 
+Ami jelenesetben számunkra érdekesebb, az-az, hogy lehetőségünk van arra, hogy összetettebb termékeket tároljunk el. 
+Ez abban az esetben igaz, amennyiben például valaki egy számítógép konfiguráció vásárlásán gondolkozik. Ebben az esetben az alkatrészek
+külön-külön el vannak tárolva, ám jelezzük az adatfolyamban, hogy ezek egy konfiguráció részét képezik.
+            </para>
+            <para>
+            Mivel, már megvan hogy a termékeket hogyan kell beolvasnunk, illetve kezelnünk, következő lépésként azt kell megvizsgálnunk, hogy hogyan is tudjuk kezelni magát a nyílvántartást. Erre is ad példát a könyvünk. A <command>ProductInventory</command> lehetővé teszi hogy olvassuk a 
+nyílvántartást, szerkeszthessük (írjunk) bele, kiírjuk azt egy kimenetre és új elemet hozzunk benne létre.
+            </para>
+            <para>
+            Végül pedig ahhoz, hogy a feladat feltételeinek eleget tegyen a programunk, néhány módosítást kell eszközölnünk
+a kódban a beolvasás terén. Ahhoz, hogy megfelelő legyen a feltételeknek és az objektumorientált elveknek
+is néhány módosításra van szükségünk. Ilyen például az hogy switch-case szerkezet ne szerepeljen az ős osztályban.
+            </para>
+            <para>
+            A fejezet utolsó pontjában pedig arról van szó, hogy miként lehet elegánsabbá tenni a kódunkat. 
+            A könyvben erre olyan megoldást találhatunk, hogy a programunk, a dátumok kezelését egy külön osztályra bízza.
+            </para>
+            <para>
+            A program futtatása után az alábbi konzol kimenetet kapjuk:
+            </para>
     </section>
 
     <section>
         <title>BPMN</title>
-        	<para>
-                Fealadatleírás
+            <para>
+            Rajzoljunk le egy tevékenységet BPMN-ben! 
             </para>
+        	<para>
+            <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/PROG2/Prog2_7.pdf"/> (34-47
+            fólia)
+            </para>
+            <figure>
+	<title>BPMN ételrendelés folyamatábra. </title>
+	<mediaobject>
+                <imageobject>
+                    <imagedata fileref="BPMNdiagram.png" format="PNG" scale="50"/>
+                </imageobject>
+    </mediaobject>
+	</figure>
+    <para>
+    A BPMN - teljes nevén Business Process Model and Notation - egy modellezési forma, amely kiválóan
+alkalmas arra hogy egy folyamat lépéseit szemléltessünk benne (folyamatábra, pszeudocode segítségével). 
+Az ábrák segítségével be tudjuk mutatni azt, hogy egy adott folyamat során milyen lépési lehetoségek vannak és ezek hová is vezethetnek. 
+Kiválóan alkalmas folyamatok megtervezésére és arra hogy a folyamatok minden irányú kimenetelét szemléltethessük.
+    </para>
+    <para>
+Jelen ábrán egy éterremből való ételrendelés folyamata látható. A kiinduló állapotot az első kör jelöli amikor is, a vásárló éhes.
+Ábránkon a rendelési folyamat lépéseit a téglalapok, míg a folyamat irányát a nyilak jelölik. A rombusz az elágazásokat jelenti, ahonnan a kimeneteltől függően halad tovább a folyamat.
+A folyamatábra végén található kör a végső állapotot jelenti, ahol a folyamatunk véget ér.
+    </para>
 
     </section>
 
@@ -43,7 +166,70 @@
         	<para>
                 Fealadatleírás
             </para>
-
+            <para>
+            Ebben a feladatban az OOCWC projektről kellett UML diagrammot készíteni, azonban jelenesetben nem grafikusan, hanem
+kódolás segítségével. A végeredmény ugyanúgy egy diagramm lesz,valamint a jelölés rendszere is ugyanaz lesz, mint az
+első két feladat esetében. A megvalósítása viszont nem a Visual Paradigm programmal történt, hanem kódok
+segítségével. Az osztályok generálását a következőképpen tehetjük meg:
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            Class.A("MyShmClient")
+("# nr_graph: NodeRefGraph*", "# m_teamname: string", "- nr2v: ←-
+map<unsigned_object_id_type, NRGVertex>")
+("+MyShmClient()",
+"+~MyShmClient()",
+"+start()",
+"+start10()",
+"+num_vertices()",
+"+print_edges()",
+"+print_vertices()",
+"+bgl_graph()",
+"+hasDijkstraPath()",
+"+hasBellmanFordPath()",
+"-foo()",
+"-init()",
+"-gangsters()",
+"-initcops()",
+"-pos()",
+"-car()",
+"-route()");
+            ]]>
+            </programlisting>
+            </para>
+            <para>  
+            Ezen osztály esetében látható, hogy a változók és a metódusok miként lettek belehelyezve az osztályba.
+            Az első zárójelben az osztály nevét definiáltuk, a másodikban a változók nevét és típusát, valamint a hozzáférhetoségüket adtuk meg, a
+harmadik zárójel esetében pedig, a metódusok lettek létrehozva. A diagramm minden osztályát ily módon hoztuk létre.
+            </para>
+            <para>
+            Léteznek továbbá olyan osztályok is, melyek át lettek alakítva, azért, hogy más szerepet tölthessenek be. 
+            Ilyen például: a SmartCar a sampleclient package-ben. Látható hogy ott szerpel egy <command>Struct</command> kulcsszó a SmartCar név
+fölött, ez arra szolgál, hogy megjelenítsük azt, hogy ez egy struktúra nem pedig egy osztály. Megvalósításhoz az alábbi kódot használjuk: classStereotypes.B<command>("Struct");</command>
+            </para>
+            <para>
+            Az osztályok elhelyzkedését a diagrammon belül is kóddal kell megadni, erre több fajta megoldás is létezik.
+            Az egyik megoldási mód az-az, hogy megadjuk az osztályok egymáshoz való viszonyát relatívan. Ezt ily módon tehetjük meg: J.w =
+H.e + (100, 0);. 
+            A másik megoldás az talán egyszerűbb a fent említett megoldási módnál. Ebben az esetben, azt kell megadni, hogy egymáshoz képest milyen
+irányba helyezkedjenek el és mennyi legyen a térköz közöttük.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            topToBottom.midx(50)(L, K, M);
+leftToRight.midy(50)(O, M);
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            A program végén pedig, még be kell rajzolnunk közéjük a köztük fennálló kapcsolatokat. Ezt a <command>link</command> utasítással tehetjük meg. Az első
+zárójelben adhatjuk meg a kapcsolat típusát: link(nest)(B.n -- A.s);.
+            </para>
+            <para>
+            A diagramm kirajzolása után az alábbi eredményt kapjuk:<link xlink:href="https://github.com/Pattesz1998/Prog2/blob/master/robocar-1.pdf"/>      
+            </para>
     </section>
 
     <section>
