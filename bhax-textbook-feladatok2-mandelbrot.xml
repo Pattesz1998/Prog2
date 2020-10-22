@@ -128,6 +128,14 @@ is néhány módosításra van szükségünk. Ilyen például az hogy switch-cas
             <para>
             A program futtatása után az alábbi konzol kimenetet kapjuk:
             </para>
+            <figure>
+	<title>Program futása utáni kimenet</title>
+	<mediaobject>
+                <imageobject>
+                    <imagedata fileref="kimenet.png" format="PNG" scale="50"/>
+                </imageobject>
+    </mediaobject>
+	</figure>
     </section>
 
     <section>
@@ -235,7 +243,7 @@ zárójelben adhatjuk meg a kapcsolat típusát: link(nest)(B.n -- A.s);.
     <section>
         <title>EPAM: Neptun tantárgyfelvétel modellezése UML-ben</title>
         	<para>
-                Fealadatleírás
+                Modellezd le a Neptun rendszer tárgyfelvételéhez szükséges objektumokat UML diagramm segítségével.
             </para>
 
     </section>

@@ -9,15 +9,34 @@
     <section>
         <title>Encoding</title>
         	<para>
-                Fealadatleírás
+            Fordítsuk le és futtassuk a Javat tanítok könyv MandelbrotHalmazNagyító.java forrását úgy, hogy a
+            fájl nevekben és a forrásokban is meghagyjuk az ékezetes betűket!
+            https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/adatok.html
             </para>
-
+            <para>
+            A feladat során a MandelbrotHalmazNagyító.java fájlt kellett lefordítanunk úgy, hogy az ékezetes karakterekkel együtt is le tudjon fordulni a programunk.
+            Ezt úgy tudjuk megtenni, ha a program fordítása során megadunk egy encoding kapcsolót, a parancssori paraméterek közzé: <command> javac -encoding "ISO-8859-1" MandelbrotIterációk.java MandelbrotHalmazNagyító.java.</command>
+            </para>
+            <para>
+            Az encoding kulcsszó segítségével adhatjuk meg a karakterkódolást, mely segítségével értelmezni szeretnénk a kódot. 
+            Jelen helyzetben ez a karakterkészlet az ISO-8859-1 lesz. Ez egy szabvány, amely tartalmazza az ékezetes karaktereket,  így már a megfelelő módon fog működni a programunk.
+            </para>
+            <para>
+            Programunk futása során kapott kimenet:
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="maldelbrot.png" scale="70" />
+                </imageobject>
+            </mediaobject>
+            </para>
     </section>
 
     <section>
         <title>OOCWC lexer</title>
         	<para>
-                Fealadatleírás
+               
             </para>
 
     </section>
@@ -25,7 +44,24 @@
     <section>
         <title>l334d1c4 6</title>
         	<para>
-                Fealadatleírás, ZÖLD FELADAT
+            Írj olyan OO Java vagy C++ osztályt, amely leet cipherként működik, azaz megvalósítja ezt a betű helyettesítést: https://simple.wikipedia.org/wiki/Leet (Ha ezt első részben nem tetted meg, akkor írasd ki és
+            magyarázd meg a használt struktúratömb memóriafoglalását!)
+            </para>
+            <para> Megoldás forrása: <link xlink:href="https://github.com/Pattesz1998/Prog2/blob/master/L33tConvertor.java"/></para>
+            <para>
+            A feladatunk megoldása során létrehoztunk egy java kódot, amely megvalósítja magát a helyettesítést. 
+            A program első részében a toLeetCode metódus található. Ez a metódus felel a helyettesítésért a megadott karakterláncon.
+            Először a petternben megadjuk, hogy milyen karaktereknek létezik megfelelője, amin a helyettesítést végre tudjuk majd hajtani
+            , majd a mapban eltároljuk magát a helyettesítéshez használt táblázatot. Ezután egy for ciklus segítségével végig megyünk a bufferen és beolvassuk a karakterláncot. 
+            A key változónkban tároljuk el az éppen vizsgált karaktert nagybetűs (upperchase) formában, majd ezt követően megvizsgáljuk a key-ben tárolt karaktert.
+            </para>
+            <para>
+            Amennyiben a keyben tárolt karakter szerepel a táblázatban, abban az esetben kicseréljük a megfelelőjére, ha viszont nem szerepel a táblázatban akkor a
+            key-ben lévő karaktert kapjuk vissza eredményül. A metódus végén a result-ban eltárolt eredményt kapjuk vissza.
+            </para>
+            <para>
+            A main függvényben példányosítjuk az objektumot, majd beolvassuk a karakterláncot a bufferból, végül erre a láncra meghívjuk a helyettesítő metódust, és kiíratjuk az eredményt. 
+            Mivel ez a folyamat egy ciklusba van ágyazva, így többször is lehetőségünk van elvégezni a cserét.
             </para>
 
     </section>
@@ -33,7 +69,111 @@
     <section>
         <title>Full screen</title>
         	<para>
-                Fealadatleírás, ZÖLD FELADAT
+                A feladatunk az, hogy készítsünk egy Java Full screen programot.
+            </para>
+            <para>
+            <command>Screen.java</command>
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            import java.awt.*;
+            import javax.swing.JFrame;
+            public class Screen {
+            private GraphicsDevice vc;
+            public Screen() {
+            GraphicsEnvironment env = GraphicsEnvironment. ←-
+            getLocalGraphicsEnvironment();
+            vc = env.getDefaultScreenDevice();
+            }
+            public void setFullScreen(DisplayMode dm, JFrame window) {
+            window.setUndecorated(true);
+            window.setResizable(true);
+            vc.setFullScreenWindow(window);
+            if(dm != null && vc.isDisplayChangeSupported()) {
+            try {
+            vc.setDisplayMode(dm);
+            }catch(Exception ex) {}
+            }
+            }
+            public Window getFullScreenWindow(){
+            return vc.getFullScreenWindow();
+            }
+            public void restoreScreen() {
+            Window w = vc.getFullScreenWindow();
+            if(w != null) {
+            w.dispose();
+            }
+            vc.setFullScreenWindow(null);
+            }
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            <command>bucky.java</command>
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            import java.awt.*;
+            import javax.swing.JFrame;
+            public class bucky extends JFrame {
+            public static void main(String[] args) {
+            DisplayMode dm = new DisplayMode(800,600,16, ←-
+            DisplayMode.REFRESH_RATE_UNKNOWN);
+            bucky b = new bucky();
+            b.run(dm);
+            }
+            public void run(DisplayMode dm) {
+            getContentPane().setBackground(Color.DARK_GRAY);
+            setForeground(Color.WHITE);
+            setFont(new Font("Arial", Font.PLAIN, 24));
+            Screen s = new Screen();
+            try {
+            s.setFullScreen(dm, this);
+            try {
+            Thread.sleep(5000);
+            }catch(Exception ex) {}
+            }finally {
+            s.restoreScreen();
+            }
+            }
+            public void paint(Graphics g) {
+            super.paint(g);
+            g.drawString("Ez Egy Szoveg", 200, 200);
+            }
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Láthatjuk, a fullscreen alkalmazásunk két fájlból áll.
+            A Screen.java-ban létrehozunk egy ablakot, ami a window.setUndecorated(true); sor miatt válik fullscreenné, ugyanis abban az esetben ha az értékét false-ra álitjuk,
+            akkor egy szabadon átméretezhető ablakot fogunk kapni. Hamár itt tartunk érdemes megemlítenünk azt is, hogy az átméretezés is true/false-al álitható window.setResizable(); segitségével.
+            Ez nekünk true-ra (tehát igaz értékre) van állitva, de mivel mi fullscreennel dolgozunk, így az átméretezés lehetőségét nem fogjuk érezni.
+            Fontos még továbbá megemlítenünk, a Screen.java álományban, a restoreScreen metódustami a kijelző visszaállításáért felelős, ugyanis nem elegendő a 
+            fullscreen ablak létrehozásáról gondoskodnunk, annak eltüntetéséért is mi leszünk a felelősek.
+            </para>
+            <para>
+            Most, hogy képesek vagyunk egy FullScreen ablak létrehozására csinálnunk is kéne vele valamit. Arra, hogy mit is kezdjünk vele, egy egyszerü példát láthatunk a bucky.java álományban.
+            Annyi fog mindösszesen történni, hogy kiírunk egy szöveget a kijelzőre 5 másodpercr, majd ezt követően leáll a programunk.
+            Az ablakunk kinézetét valamint a futási idejét, egy run metódusban határoztuk meg.
+            A getContentPane().setBackground(Color.DARK_GRAY); sötétszürke színűre állítja a hátterünket az előteret pedig a setForeground(Color.WHITE);-tal fehérre állítjuk. 
+            A setFont command segítségével állítjuk be a használandó betűtípust és méretet. 
+            A run metódusnak a második fele fogja megadni, azt, hogy mennyi ideig fusson a programunk.
+            Ezt egy try catch segítségével oldottuk meg. Amennyiben megkapja a displayt, abban az esetben altatásra kerül a szál 5 másodpercig, majd a restoreScreen-nel eltünteti az ablakunkat.
+            Végezetül a paint metódusunk maradt hátra, mely a megadott szöveg kiíratásáért lesz felelős.
+            </para>
+            <para>
+            <command>Futtatás után az alábbi eredményt kapjuk:</command>
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="full_screen.png" scale="70" />
+                </imageobject>
+            </mediaobject>
             </para>
 
     </section>       
@@ -41,7 +181,51 @@
     <section>
         <title>Paszigráfia Rapszódia OpenGL full screen vizualizáció</title>
         	<para>
-                Fealadatleírás
+            Lásd vis_prel_para.pdf! Apró módosításokat eszközölj benne, pl. színvilág, textúrázás, a szintek jobb
+            elkülönítése, kézreállóbb irányítás.
+            </para>
+            <para>
+            Feladatunk első fordítása során hibát tapasztaltunk, ez annak volt köszönhető, hogy a feladat felélesztéséhez szükség van a <command>sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-commondev</command> telepítésére. 
+            Amennyiben ezzel megvagyunk utána már képesek leszünk fordítani és futtatni a para6.cpp nevű fájlt.
+            </para>
+            <para>
+            Én személyszerint az irányításon módosítottam a programban, mivel nekem nem volt igazán kézhezálló a billentyűzetes irányítás, ellentétesen volt beállítva. 
+            Ezen probléma megoldásához az irányításon kellett módosítanunk, az irányokat meg kellett fordítanunk.
+            Ezt az alábbi kódrészlet segítségével tehetjük meg:
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            void skeyboard ( int key, int x, int y )
+            {
+            if ( key == GLUT_KEY_UP ) {
+            cubeLetters[index].rotx -= 5.0;
+            } else if ( key == GLUT_KEY_DOWN ) {
+            cubeLetters[index].rotx += 5.0;
+            } else if ( key == GLUT_KEY_RIGHT ) {
+            cubeLetters[index].roty += 5.0;
+            } else if ( key == GLUT_KEY_LEFT ) {
+            cubeLetters[index].roty -= 5.0;
+            } else if ( key == GLUT_KEY_PAGE_UP ) {
+            cubeLetters[index].rotz -= 5.0;
+            } else if ( key == GLUT_KEY_PAGE_DOWN ) {
+            cubeLetters[index].rotz += 5.0;
+            }
+            glutPostRedisplay();
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            A színeken is eszközölhetünk változtatásokat, hogy nagyobb kontrasztot érjünk el, ezt úgy próbáltam ki, hogy a glColor3f paramétereit állítottam át, a 66., 188., illetve a 220. sorban. 
+            Az eredmény az alábbi lett:
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="para6.png" scale="70" />
+                </imageobject>
+            </mediaobject>
             </para>
 
     </section>
@@ -49,7 +233,7 @@
     <section>
         <title>Paszigráfia Rapszódia LuaLaTeX vizualizáció</title>
         	<para>
-                Fealadatleírás
+                
             </para>
 
     </section>
@@ -57,7 +241,7 @@
     <section>
         <title>Perceptron osztály</title>
         	<para>
-                Fealadatleírás
+                
             </para>
 
     </section>
@@ -65,15 +249,33 @@
     <section>
         <title>EPAM: Order of everything</title>
         	<para>
-                Fealadatleírás
+                Collection-ok rendezése esetén jellemzően futási időben derül ki, ha olyan típusú objektumokat
+                próbálunk rendezni, amelyeken az összehasonlítás nem értelmezett (azaz T típus esetén nem
+                implementálják a Comparable interface-t). Pl. ClassCastException a Collections.sort()
+                esetében, vagy ClassCastException a Stream.sorted() esetében.
+                Írj olyan metódust, amely tetszőleges Collection esetén vissza adja az elemeket egy List-ben
+                növekvően rendezve, amennyiben az elemek összehasonlíthatóak velük azonos típusú
+                objektumokkal. Ha ez a feltétel nem teljesül, az eredményezzen syntax error-t. Például:
+                List Integer actualOutput = createOrderedList(input);
+                Ahol az input Collection Integer típusú. Természetesen más típusokkal is működnie
+                kell, feltéve, hogy implementálják a Comparable interface-t
             </para>
+            <para>
+            Ezt a részt csak elkezdtem mármint az első EPAMOS feladatot, viszont a szünetben még ki fogom egészíteni, illetve amiket nem csináltam meg még eddig feladatokat meg fogom csinálni, hogy teljes legyen a könyv :)
+            </para>
+            <para>Programunk során generikusokkal fogunk dolgozni. De, hogy mire is jó valójában a generikus? Egyik nagy előnye, az-az, hogy nem kell előre megadnunk azt hogy milyen paramétert várunk, megadhatunk számára egy általános jelölést is,
+            ezáltal képesek leszünk példányosítás esetén ráhivatkozni. Ebben az esetben specifikáljuk ezt az értéket, emiatt egy általánosabb metódust vagy osztályt kapunk majd eredményül.
+            A fentiekből adódóan képesek leszünk létrehozni egy összehasonlító alkalmazást, ugyanis nem kell megadunk előre, azt, hogy mely elemeket szeretnénk összehasonlítani, hanem gerenikusok segítségével hivatkozhatunk majd rá.
+            Ezen okból kifolyólag viszont, a létrehozás során külön figyelmet kell fordítanunk az elemek összehasonlíthatóságának vizsgálására is.
+            </para>
+
 
     </section>
 
     <section>
         <title>EPAM: Bináris keresés és Buborék rendezés implementálása</title>
         	<para>
-                Fealadatleírás
+                
             </para>
 
     </section>
@@ -81,7 +283,7 @@
     <section>
         <title>EPAM: Saját HashMap implementáció</title>
         	<para>
-                Fealadatleírás
+            
             </para>
 
     </section>
