@@ -9,7 +9,54 @@
     <section>
         <title>JDK osztályok</title>
         	<para>
-                Fealadatleírás
+        Írjunk olyan Boost C++ programot (indulj ki például a fénykardból) amely kilistázza a JDK összes osztályát
+(miután kicsomagoltuk az src.zip állományt, arra ráengedve)!
+            </para>
+            <para>  
+            A feladat megoldásához szükség van arra hogy telepítsük a boost könyvtárat. Ezt a következő módon tudjuk
+megejteni: <command> sudo apt-get install libboost-all-dev </command>. A telepítés után már lehet is használni a boost könyvtárat, természetesen ehhez meg kell őt hívni.
+A boost könyvtárra azért van szükség, mivel ennek segítségével határozzuk meg az src elérési útját és annak segítségével megyünk végig az összes almappán és fájlon is.
+Továbbá a boost segítségével határozzuk meg a fájlok kiterjesztését és azt hogy a vizsgált elem-e, egy fájl-e vagy mappa-e?.
+            </para>
+            <para>
+            Most, hogy megvan az, hogy mi kell a boostból, kövtkezzen maga a kód. Első lépésként meghatározásra kerül az 
+elérési út. Ha ez megvan akkor egy while ciklus segítségével végig megy a program az összes mappán,
+almappán és fájlon is. A ciklusban meghatározásra kerül a kiterjesztés majd egy vizsgálat következik. A
+feltétel melyet vizsgál az hogy a kiterjesztés az .java-e és hogy amit vizsgál az fájl-e. Erre azért van szükség
+, hogy megvizsgálja hogy fájl-e mert van egy mappa ami .java-ra végzodik. Így ha hiányozna ez a
+feltétel akkor az <command> org.graalvm.compiler.java </command> mappa is megszámolásra kerülne. Végül pedig kiírja a standart
+outputra hogy hány darab .java fájlt talált, ezzel megadva a JDK-ban található java osztályok számát.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            #include <boost/filesystem.hpp> // includes all needed Boost. ←-
+Filesystem declarations
+#include <iostream> // for std::cout
+using namespace std;
+int main(int ac, char** av)
+{
+string extension;
+int count = 0;
+boost::filesystem::recursive_directory_iterator iterator(string ←-
+("/mnt/e/Egyetem/Tananyag/Prog2/Konyv/Feladatok/Stroustrup/ ←-
+jdk_osztaly/src"));
+while(iterator != boost::filesystem:: ←-
+recursive_directory_iterator())
+{
+string extension = boost::filesystem::extension(iterator-> ←-
+path().filename());
+if(boost::filesystem::is_regular_file(iterator->path()) && ←-
+extension == ".java"){
+count++;
+}
+++iterator;
+}
+cout << count << endl;
+return 0;
+}
+            ]]>
+            </programlisting>
             </para>
 
     </section>
@@ -25,15 +72,307 @@
     <section>
         <title>Hibásan implementált RSA törése</title>
         	<para>
-                Fealadatleírás
+    Készítsünk betű gyakoriság alapú törést egy hibásan implementált RSA kódoló: https://arato.inf.unideb.hu/-batfai.norbert/UDPROG/deprecated/Prog2_3.pdf (71-73 fólia) által készített titkos szövegen.
             </para>
-
+            <para>
+            A feladat az, hogy az elrontott RSA kódolással kódolt szöveget betű gyakoriság alapon törjük fel. Az
+elrontott RSA kódolás azt jelenti, hogy a szöveget nem egybe kódolja le a program hanem karakterenként
+végzi a kódolást. Így a kódolás nem megfeleloen működik. A betű gyakoriság alapú törés pedig azt jelenti,
+hogy a törő program megvizsgálja a kódolt szöveget majd egy táblázat segítségével, amely tartalmazza a 
+betűk gyakoriságát, visszafejti a kódolt szöveget.
+            </para>
+            <para>
+            Nézzük meg alaposabban hogy mit is jelent az RSA kódolás. Az RSA kódolás az aszimmetrikus kódolások
+közé tartozik. Ennek lényege hogy a kódolás és dekódolás során két kulcsra van szükségünk. Egy nyilvános
+kulcsra és egy privát kulcsra. A nyilvános kulcs segítségével lehet titkosítani az üzeneteket, míg a megfejtéshez a
+privát kulcsra van szükségünk. Egy üzenet küldése az alábbi módon néz ki:
+            </para>
+            <para>
+            Van két ember A és B. Ha A üzenetet akar küldeni B-nek akkor A elkéri B nyilvános kulcsát. Ennek
+segítségével titkosítja a küldeni kívánt üzenetet majd a kódolt szöveget elküldi. A feltöréshez pedig B-nek
+a privát kulcsra van szükség, ugyanis csak azzal lehet visszafejti a kódolt szöveget. Ha valaki egy másik
+kulccsal próbálja meg megfejteni a szöveget akkor az eredmény hibás lesz.
+            </para>
+            <para>
+            Az RSA eljárás rendkívül hatékony titkosítási módszer ám a megfejtése bonyolultabb mint egy szimmetrikusan kódolt szövegé. Ebbol adódik hogy biztonságosabb is. Az eljárás apaját a moduláris számelmélet és ˝
+a prímszámelmélet néhány tétele adja.
+            </para>
+            <para>
+            Most lássuk a titkosító kódot:
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            import java.math.BigInteger;
+            import java.security.SecureRandom;
+            import java.util.*
+            public class RSA {
+            private final static BigInteger one = new BigInteger("1");
+            private final static SecureRandom random = new SecureRandom();
+            private BigInteger privateKey;
+            private BigInteger publicKey;
+            private BigInteger modulus;
+            RSA(int N) {
+            BigInteger p = BigInteger.probablePrime(N/2, random);
+            BigInteger q = BigInteger.probablePrime(N/2, random);
+            BigInteger phi = (p.subtract(one)).multiply(q.subtract(one));
+            modulus = p.multiply(q);
+            publicKey = new BigInteger("65537");
+            privateKey = publicKey.modInverse(phi);
+            }
+            BigInteger encrypt(byte[] bytes) {
+            BigInteger swap = new BigInteger(bytes);
+            return swap.modPow(publicKey, modulus);
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Látható hogy a kód elején importolva lett a BigInteger, a SecureRandom és a util. A BigInteger ahhoz szükséges hogy nagy számokkal lehessen dolgozni. Erre azért van szükség mert a kulcsok amikkel a program
+dolgozik túl nagyok és az Integer határain belül nem lehetne eltárolni a szükséges számokat. A SecureRandom egy a kódoláshoz használható biztonságos számot állít elő. Ez arra jó, hogy a szám amit generál
+nehezen feltörhető. Végül a util.*-ra azért van szükség mert a mainben az eredmény egy List-ben kerül tárolásra.
+            </para>
+            <para>
+            Az RSA eljárásban kerül létrehozásra a publikus kulcs és a privát kulcs. Elsőnek a p és q változókban
+eltárolunk két valószínűleg prím számot a probablePrime segítségével. Ez után meghatározzuk a phi és a
+modulus értékét. Végül pedig létrehozzuk a publikus kulcsot és meghatározzuk a privát kulcsot úgy, hogy
+vesszük a publikus kulcs reciprokát moduló phi.
+            </para>
+            <para>
+            Az encrypt függvény végzi a titkosítást. Megkapja a byte-ba átváltott karaktert majd azt eltárolja a swapben. Erre azért van szükség mert a modPow csak BigInteger-en alkalmazható. A visszatérítésnél pedig
+megtörténik a titkosítás a modPow segítségével. A swap-be lévő értéket a publikus kulcsra emeli, majd modust hajt végre.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            public static void main(String[] args) {
+            int N = Integer.parseInt(args[0]);
+            RSA key = new RSA(N);
+            System.out.println("key = " + key);
+            String s = "test";
+            byte[] bytes = s.getBytes();
+            List<BigInteger> result = new ArrayList<BigInteger>();
+            byte[] atmenet = new byte[1];
+            for(int i = 0; i < bytes.length; i++)
+            {
+            atmenet[0] = bytes[i];
+            result.add(key.encrypt(atmenet));
+            }
+            System.out.println("message = " + s);
+            System.out.println("encrypted = " + result);
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Most pedig lássuk a main-t. Eloször a parancssorban megadott paramétert eltároljuk az N-ben majd ezt
+felhasználva legeneráljuk a kulcsot. Ha ez megvan akkor az s változóban megadjuk, hogy mi az a szöveg
+amit titkosítani akarunk. Ezt követően a bytes tömbbe belekonvertáljuk az s-ben lévő szöveget úgy,hogy
+byte típusú legyen. A resultban kerül majd tárolásra az eredmény. A for ciklus segítségével végig megyünk
+a bytes tömbön és egyesével hozzáfűzzük a result-hoz a kódolt karaktereket. A ciklus végére az egyesével
+kódolt karakterek lesznek eltárolva a resultba. A program végén pedig kiírjuk az eredményt.
+            </para>
+            <para>
+            Ezzel végeztünk a kódolással. Most nézzük meg a szöveg dekódolását.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            class KulcsPar{
+            private String values;
+            private char key = ’_’;
+            private int freq = 0;
+            public KulcsPar(String str){
+            this.values = str;
+            }
+            public void setValue(String str){
+            this.values = str;
+            }
+            public void setKey(char k){
+            this.key = k;
+            }
+            public String getValue(){
+            return this.values;
+            }
+            public char getKey(){
+            return this.key;
+            }
+            public void incFreq(){
+            freq += 1;
+            }
+            public int getFreq(){
+            return freq;
+            }
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            A dekódoló program két fájlból áll. Az egyik a KulcsPar.java a másik az RsaTores.java. Elsőnek lássuk a
+KulcsPar.java-t. Ez a fájl egy osztályt tartalmaz melyben három private változó található. Továbbá tartalmaz
+metódusokat melyek arra szolgálnak hogy a változók értékeit az osztályon kívülről is lehessen módosítani
+illetve lekérni.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            BufferedReader inputStream = new BufferedReader(new FileReader("be2 ←-
+            .txt"));
+            int lines = 0;
+            String line[] = new String[10000];
+            while((line[lines] = inputStream.readLine()) != null) {
+            lines++;
+            }
+            inputStream.close();
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Most pedig lássuk az RsaTores.java-t. Elsonek a BufferedReader segítségével a be2.txt fájlból beolvassuk
+a titkosított szöveget. ez úgy történik hogy a while ciklus segítségével soronként olvassuk a fájlt amíg az
+nem null vagyis véget nem ér a fájl. A ciklusmagban pedig növeljük a lines változót ami megadja a sorok
+számát.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            KulcsPar kp[] = new KulcsPar[100];
+            boolean volt = false;
+            kp[0] = new KulcsPar(line[0]);
+            int db = 1;
+            for(int i = 1; i < lines; i++) {
+            volt = false;
+            for(int j = 0; j < db; j++) {
+            if(kp[j].getValue().equals(line[i])) {
+            kp[j].incFreq();
+            volt = true;
+            break;
+            }
+            }
+            if(volt == false) {
+            kp[db] = new KulcsPar(line[i]);
+            db++;
+            }
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Ezt követően létrehozunk kp nevű tömböt ami a KulcsPar osztályba tarozik. Ennek első elemére beállítjuk
+az első titkosított karaktert és létrehozzuk a db változót aminek kezdőértéke egy. Ha ez megvan akkor végig
+megyünk a sorokon és végignézzük a beolvasott fájlt. Ha egy adott karaktert megtalál akkor annak a darab
+számát növeli. Ha olyan karaktert talált amilyen eddig még nem szerepelt akkor azt új értékként felveszi
+a kp tömbbe és annak is növeli a darabszámát eggyel. Ez addig meg míg a ciklus végig nem ér az összes
+soron.
+            </para>
     </section>
 
     <section>
         <title>Változó argumentumszámú ctor</title>
         	<para>
-                Fealadatleírás
+                Készítsünk olyan példát, amely egy képet tesz az alábbi projekt Perceptron osztályának bemenetére és a
+Perceptron ne egy értéket, hanem egy ugyanakkora méretű „képet” adjon vissza. (Lásd még a 4 hét/Perceptron osztály feladatot is.)
+            </para>
+            <para>
+            A feladat során a tavalyi Perceptron feladatot kellett tovább fejleszteni. A lényeg az hogy a tavalyi Perceptron feladat a számítások során egyetlen értékre szűkítette le a bemeneti képet, most viszont ezen módosítani
+kellett. A bemeneti képet eloször le kell szűkíteni 256 értékre majd ebből kell visszaalakítani egy az eredetivel megegyező méretű képpé az értékeket.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            #include <iostream>
+            #include "mlp.hpp"
+            #include <png++/png.hpp>
+            #include <fstream>
+            int main (int argc, char **argv)
+            {
+            png::image <png::rgb_pixel> png_image (argv[1]);
+            int size = png_image.get_width() *png_image.get_height();
+            Perceptron* p = new Perceptron (3, size, 256, size);
+            double* image = new double[size];
+            for (int i {0}; i<png_image.get_width(); ++i)
+            for (int j {0}; j<png_image.get_height(); ++j)
+            image[i*png_image.get_width() +j] = png_image[i][j].red ←-
+            ;
+            double* newimage = (*p) (image);
+            for (int i = 0; i<png_image.get_width(); ++i)
+            for (int j = 0; j<png_image.get_height(); ++j)
+            png_image[i][j].blue = newimage[i*png_image.get_width() ←-
+            +j];
+            png_image.write("output.png");
+            delete p;
+            delete [] image;
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Látható hogy a mainben létrehozott percepron osztályú példány létrehozáskor meghívja a konstruktort. A
+konstruktornak 4 paramétert adunk meg. Az elso érték azt adja meg hogy hány értéket kap a konstruktor
+. Majd ezt követően megadjuk a paramétereket. Az első paraméter a size. Ez azt határozza meg hogy 
+mekkora a bementi kép. Majd a 256 megadja hogy hány értére szűkítse a perceptron a képet, végül pedig
+megadjuk hogy az eredményként visszaadott kép mekkora méretű legyen. Most viszont nézzük meg magát a konstruktort. A main további részében látható ahogy a kép red értékei mentésre kerülnek az image
+változóban, majd ezt felhasználva az eredeti kép blue értékeit felülírjuk a kimentett értékekkel. Végül az
+output.png-be kiírjuk az új képet és a percepron példányt valamint az image tömböt töröljük.
+Ahhoz hogy megfeleloen működjön az új képet generáló Perceptron program a header fájlon is kell módosítanunk.
+. Elsőnek a konstruktoron kell módosítani.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            Perceptron ( int nof, ... )
+            {
+            n_layers = nof;
+            units = new double*[n_layers];
+            n_units = new int[n_layers];
+            va_list vap;
+            va_start ( vap, nof );
+            for ( int i {0}; i < n_layers; ++i )
+            {
+            n_units[i] = va_arg ( vap, int );
+            if ( i )
+            units[i] = new double [n_units[i]];
+            }
+            va_end ( vap );
+            weights = new double**[n_layers-1];
+            #ifndef RND_DEBUG
+            std::random_device init;
+            std::default_random_engine gen {init() };
+            #else
+            std::default_random_engine gen;
+            #endif
+            std::uniform_real_distribution<double> dist ( -1.0, 1.0 );
+            for ( int i {1}; i < n_layers; ++i )
+            {
+            weights[i-1] = new double *[n_units[i]];
+            for ( int j {0}; j < n_units[i]; ++j )
+            {
+            weights[i-1][j] = new double [n_units[i-1]];
+            for ( int k {0}; k < n_units[i-1]; ++k )
+            {   
+            weights[i-1][j][k] = dist ( gen );
+            }
+            }
+            }
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Látható hogy a módosított konstruktor már nem fix paraméterkészlettel dolgozik hanem változó számúval.
+Elsonek beolvassa a változók számát, majd létrehoz egy akkora tömböt melyben el tudja tárolni a kapott
+értékeket. Az n_units-ban eltároljuk a szintekhez tartozó unitok számát majd ennek segítségével feltöltésre
+kerül a weights.
+A másik lényegi változás a double* operator()-nál történt. Ez most már egy tömbbel dolgozik és azt is
+térít vissza. Erre azért volt szükség hogy módosítani tudjunk a képen.
+Végül az eredmény az abábbi módon néz ki:
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="ctor.png" scale="70" />
+                </imageobject>
+            </mediaobject>
             </para>
 
     </section>
@@ -41,18 +380,69 @@
     <section>
         <title>Összefoglaló</title>
         	<para>
-                Fealadatleírás
+                RSA törőbe integrálva.
             </para>
 
     </section>
 
-    <section>
-        <title>EPAM: It's gone. Or is it?</title>
-        	<para>
-                Fealadatleírás
-            </para>
+     <section><title>EPAM: It's gone. Or is it?</title>
+        <para>
+            Adott a következő osztály. Mutassunk példát olyan esetre, amikor meghívjuk az osztály writeStuff() metódusát, de a program lefutása után, a fájl, amibe írtunk 
+            mégis üres.
+        </para>   
+        <programlisting language="java">
+            <![CDATA[
+public class BugousStuffProducer {
+    
+    private Writer writer;
 
+    public BugousStuffProducer(String outputFileName) throws IOException {
+
+        writer = new FileWriter(outputFileName);
+    }
+
+    public void writeStuff() throws IOException {
+        writer.write("Stuff");
+    }
+
+    public void finishProducingStuff() throws IOException {
+        writer.close();
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        BugousStuffProducer stuffProducer = new BugousStuffProducer("file.txt");
+        stuffProducer.writeStuff();
+
+    }
+
+}
+            ]]>
+        </programlisting>
+        <para>
+            Adjunk meg rögtön az osztályunknak egy main metódust:
+        </para>   
+        <programlisting language="java">
+            <![CDATA[
+    public static void main(String[] args) throws IOException {
+
+        BugousStuffProducer stuffProducer = new BugousStuffProducer("file.txt");
+        stuffProducer.writeStuff();
+
+    }
+            ]]>
+        </programlisting>
+        <para> A kódunk futása során létrejött file üres lesz, hasonlóan az alap filehoz, ennek az az oka, hogy a
+            FileWriter objektumunknak nem hívtuk meg a close() metódusát, amely lezárná az
+            adatfolyamot. Egy file írásra való megnyitása során, az adatok bufferelve vannak, mely azt
+            jelenti, hogy addig nem lesznek beleírva a tényleges fájlba, míg a rendszer nem bizonyosodott meg
+            arról, hogy többet már nem szeretnénk írni a programunkba. Amennyiben ezt nem jelezzük egy
+            lezárással, abban az esetben, az adatok semelyik esetben sem fognak bekerülni célállományba.</para>
+        <para>Erre a problémára egyfajta megoldás lehet, amennyiben megpróbálunk nagyobb figyelmet fordítani a 
+            meghívni a close() metódus meghívására, vagy ezen kívűl használhatjuk a java interfészét (ez is egy létező megoldás lehet..). 
+            Nézzük is meg a kódunkat picikét átalakítva:</para>  
     </section>
+
 
     <section>
         <title>EPAM: Kind of equal</title>

@@ -9,73 +9,257 @@
     <section>
         <title>Gengszterek</title>
         	<para>
-                Fealadatleírás
+                Gengszterek rendezése lambdával a Robotautó Világbajnokságban https://youtu.be/DL6iQwPx1Yw (8:05-től)
             </para>
-
+            <para>
+            A feladatban az OOCWC projektben lévő gengsztereket kell rendeznünk. A rendezés szempontja az, hogy melyik található a legközelebb a rendorhöz.
+            Lássuk az ehhez használt kódrészletet:
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            std::sort ( gangsters.begin(), gangsters.end(), [this, cop] (
+            Gangster x, Gangster y )
+            {
+            return dst ( cop, x.to ) < dst ( cop, y.to );
+            } );
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Mint azt láthatjuk, a sorban metódus segítségével kerülnek rendezésre a gengszterek egy lambda segítségével. 
+            A metódus, két gengszter osztályú változót kap értékül, ennek segítségével dolgozik. A lambda testében egy feltétel található.
+            Abban az esetben kerül igaz (true) érték visszaadásra, ha az x gengszter közelebb van a rendőrhöz - vagyis cop-hoz - mint az y. 
+            Tehát, amikor a metódus végig megy a gengszerek vektoron, abban az esetben, az kerül a vektor elejére, aki a legközelebb lesz a cop-hoz.
+            </para>
     </section>
 
     <section>
         <title>C++11 Custom Allocator</title>
         	<para>
-                Fealadatleírás
+                https://prezi.com/jvvbytkwgsxj/high-level-programming-languages-2-c11-allocators/ a CustomAlloc-os példa, lásd C forrást az UDPROG repóban!
             </para>
-
+            <para>
+            Ezen feladatunkban, egy saját allokátor elkészítése volt a feladat. Az allokátoroknak a lényege tulajdonképpen az, hogy helyet biztosítson a memóriában egy adott típus számára.
+            Erre létezik alapértelmezett allokátor is, viszont amennyiben úgy gondoljuk, hogy szeretnénk egy saját allokátort készíteni, erre is lehetőségünk van.. 
+            Lássuk tehát a saját allokátorunkat:
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            template<typename T>
+            class CustomAlloc
+            {
+            public:
+            CustomAlloc() {}
+            CustomAlloc(const CustomAlloc&) {}
+            ~CustomAlloc() {}
+            using size_type = size_t;
+            using value_type = T;
+            using pointer = T*;
+            using const_pointer = const T*;
+            using reference = T&;
+            using const_reference = const T&;
+            using difference_tyoe = ptrdiff_t;
+            pointer allocate( size_type n)
+            {
+            int s;
+            char* p = abi::__cxa_demangle( typeid (T).name(), 0, 0,&s);
+            std::cout << "Allocating " << n << " objects of " << n* 
+            sizeof (T) << " bytes. " << typeid (T).name() << "="<< p << std::endl;
+            delete p;
+            return reinterpret_cast<T*>(new char[n*sizeof(T)]);
+            }
+            void deallocate (pointer p, size_type n)
+            {
+            delete[] reinterpret_cast<char *>(p);
+            std::cout << "Deallocating " << n << " objects of " << n*sizeof (T) << " bytes. " << typeid (T).name() << "=" << p << std::endl;
+            }
+            };
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            A saját allokátokunk előtt található egy template. Ez arra szolgál, hogy egy típust paraméterként át tudjunk
+            átadni, ezáltal létrehozva egy általános metódust, mely bármilyen típussal használható lesz. Az allokátor
+            előtt létrehozott változók típusa a using. Ez egy típus alternatíva létrehozásához használható. Erre példa a
+            reference. Mostantól ha ez kerül a kódba az a T és-t fog jelenteni. 
+            Most viszont lássuk az allokátorunkat:
+            A char* p-ben eltároljuk a típust mellyel jelenleg dolgozik az allokátor. Ehhez a __cxa_demangle metódust
+            használjuk. Ez arra szolgál hogy a typeid (T).name() által meghatározott mangolt nevet visszafejtsük
+            és meghatározzuk belőle a típust. Erre a nyomkövetés miatt van szükségünk. Ezután, a nyomkövetés céljából
+            kiírásra kerül egy sor majd a return-höz érve a reinterpret_cast segítségével megtörténik a memóriában a
+            helyfoglalás. A deallocate az allocate ellentéte. Arra szolgál, hogy a már használaton kívüli memória
+            területet felszabadítsa. A delete végzi a felszabadítást, és a nyomkövetés céljából itt is történik egy kiíratás.
+            </para>
     </section>
 
     <section>
         <title>STL map érték szerinti rendezése</title>
         	<para>
-                Fealadatleírás
+                Például: https://github.com/nbatfai/future/blob/master/cs/F9F2/fenykard.cpp#L180
             </para>
-
+            <para>
+            A feladat az hogy érték szerint redezzük a map-ot. Ebben az a csavar hogy a map alapvetően kulcs szerint rendez. Ahhoz hogy érték szerint lehessen rendezni egy kis trükköt kell alkalmaznunk:
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            std::vector<std::pair<std::string, int>> sort_map ( std::map <std::
+            string, int> &rank )
+            {
+            std::vector<std::pair<std::string, int>> ordered;
+            for ( auto & i : rank ) {
+            if ( i.second ) {
+            std::pair<std::string, int> p {i.first, i. 
+            second};
+            ordered.push_back ( p );
+            }
+            }
+            std::sort (
+            std::begin ( ordered ), std::end ( ordered ),
+            [ = ] ( auto && p1, auto && p2 ) {
+            return p1.second > p2.second;
+            }
+            );
+            return ordered;
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            A trükk az hogy először átteszi a map kulcs érték párjait egy vektorba ami használja a pair-t. A pair segítségével lehetőségünk van különböző
+            típusú értékek páronkénti tárolására. Erre azért van szükség, mert a vektorban eltárolva már végre lehet hajtani az érték szerinti rendezést.
+            A vektorba történő áthelyezést a for ciklus végzi. Végig megyünk a paraméterként kapott mapon és ha a kulcshoz tartozik érték is, akkor a
+            p-be beletöltjük a párt majd a push_back segítségével a p-t hozzáfűzzük a vektorhoz. Miután áthelyezésre kerülnek a párok a sort metódus segítségével
+            elvégzésre kerül a rendezés. Ahhoz viszont hogy érték szerint legyen rendezve a Gengszterek feladatban megismert lambdára fogunk támaszkodni. 
+            Végig megyünk a létrehozott vektoron az elejétől a végéig, úgy hogy az értékeket átmásoljuk nem pedig referenciaként hivatkozunk rájuk.
+            A lambda segítségével meg kell határozni hogy a rendezés az érték szerint legyen. Ez úgy történik hogy a return a second-ot vizsgálva egy bool értéket ad meg 
+            az alapján, hogy az összehasonlított p1.second nagyobb-e mint a p2.second. Ha ez igaz akkor a bool is igaz értéket ad.
+            </para>
     </section>
-
     <section>
         <title>Alternatív Tabella rendezése</title>
         	<para>
-                Fealadatleírás
+               Mutassuk be a https://progpater.blog.hu/2011/03/11/alternativ_tabella a programban a java.lang Interface Comparable T szerepét!
             </para>
-
-    </section>
-
-    <section>
-        <title>Prolog családfa</title>
-        	<para>
-                Fealadatleírás
+            <para>
+            A feladat során a Csapat osztály definíciójához kellett felhasználnunk a Comparable interfészt. Erre azért volt
+            szükség,hogy a rendezCsapatok metódusban a sort függvény kulcsként használhassa, úgy hogy nem kell
+            külön megadni összehasonlítót. Lássuk hogy hogyan néz ki a programban.:
             </para>
-
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            public static void rendezCsapatok(String[] s, double h[], String[] e, int ep[]) {
+            System.out.println("\nCsapatok rendezve:\n");
+            int csapatNevekMeret = h.length;
+            Csapat csapatok[] = new Csapat[csapatNevekMeret];
+            for (int i = 0; i < csapatNevekMeret; i++) {
+            csapatok[i] = new Csapat(s[i], h[i]);
+            }
+            java.util.List<Csapat> rendezettCsapatok = java.util.Arrays.asList(csapatok);
+            java.util.Collections.sort(rendezettCsapatok);
+            java.util.Collections.reverse(rendezettCsapatok);
+            java.util.Iterator iterv = rendezettCsapatok.iterator();
+            ....
+            ....
+            ....
+            class Csapat implements Comparable<Csapat> {
+            protected String nev;
+            protected double ertek;
+            public Csapat(String nev, double ertek) {
+            this.nev = nev;
+            this.ertek = ertek;
+            }
+            public int compareTo(Csapat csapat) {
+            if (this.ertek < csapat.ertek) {
+            return -1;
+            } else if (this.ertek > csapat.ertek) {
+            return 1;
+            } else {
+            return 0;
+            }
+            }
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            A Comparable interfész arra szolgál hogy általunk létrehozott típusokat tudjunk vele rendezni. Az Interface
+            Comparable T-ben a T helyére lehet behelyettesíteni azt az objektum típust amihez hasonlítani szeretnénk
+            az interfészt használó objektumot. Jelen esetben ez azt jelenti hogy a Csapat-hoz szeretnénk hasonlítani.
+            A rendezést a compareTo metódus végzi amely paraméterként megkapja a csapatot. A compareTo három
+            különböző értékkel térhet vissza. Ha az aktuális objektum nagyobb mint a paraméterben kapott, akkor a
+            visszatérési érték 1 lesz. Ha kisebb akkor -1, ha pedig egyenlő, abban az esetben 0.
+            Egy lista vagy egy tömb amit ezekből az objektumokból készítünk, ha a sort-tal rendezzük akkor fel fogja
+            használni a compareTo-t is.
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="source/eredmeny.png" scale="80" />
+                </imageobject>
+        </mediaobject>
+            </para>
     </section>
 
     <section>
         <title>GIMP Scheme hack</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
+		<para>
+            Ha az előző félévben nem dolgoztad fel a témát (például a mandalás vagy a króm szöveges dobozosat) akkor itt az alkalom!
+		</para>
+        <para>
+            A <command>GIMP</command>(GNU Image Manipulation Program) egy képszerkesztő program. A legtöbb platformon elérhető, ami elősegítette világraszóló terjedését.
+			A programban, különböző képszerkesztési eszközök állnak rendelkezésünkre, pl: rajzolhatunk és színezhetünk akár átlátszóvá is tehetünk egy képet, támogatja a vektorgrafikát, valamint fontos, hogy rétegekkel dolgozik. A <command>Script-Fu</command> a Scheme szkriptnyelven alapul, melyet már korábban (a 9. fejezetben) tárgyalt <command>Lisp</command> programozási nyelvekhez tartozik. A program maga ezen nyelven íródott, melynek lényege, hogy a bemenetként kapott szöveget átalakítsa, ezen keresztül effektet tegyen rá.
+        </para>
+        <para>A GIMP programot fogjuk használni a mandala szerkesztéséhez. A mandala.scm fájlt berakjuk a usr/share/gimp/2.0/scripts mappába, majd a GIMP-ben megnyitjuk</para>
     </section>
-
     <section>
-        <title>EPAM: Mátrix szorzás Stream API-val</title>
-        	<para>
-                Fealadatleírás
-            </para>
+<title>EPAM: Mátrix szorzás Stream API-val</title>
+<para>
+Matemamatikából már tudhatjuk, hogy mátrixszorzás feltétele, az első mátrix oszlopainak száma megegyezzen a másik mátrix sorainak számával.
+Az eredménymátrix sorainak a száma az első mátrixé lesz, és oszlopainak száma a másodiké. Nézzük is meg a kódot: Egy Matrix osztályt hozunk létre, és ennek lesznek metódusai illetve attribútumai.
+Láthatjuk, hogy van egy kétdimenziós tömbünk, ez lesz a mátrixunk, emellett van két egészünk (intünk) is, ezek a sor és oszlopok számát fogják megadni.
+<programlisting language="java">
+<![CDATA[
+ 	public class Matrix {
 
-    </section>
+    public int[][] matrix;
+    public int rowsLenght;
+    public int columnsLenght
 
-    <section>
-        <title>EPAM: LinkedList vs ArrayList</title>
-        	<para>
-                Fealadatleírás
-            </para>
+    public Matrix(int[][] matrix) {
+        this.matrix = matrix;
+        this.rowsLenght = matrix.length;
+        this.columnsLenght = matrix[0].length;
+    }
+]]>
+        </programlisting> 
+</para>
+<para>
+Nézzük a szorzó metódust:
+<programlisting language="java">
+<![CDATA[
+ 	public Matrix multiply(Matrix input) {
+        int[][] result = Arrays.stream(this.matrix)
+                .map(r -> IntStream.range(0, input.columnsLenght)
+                        .map(i -> IntStream.range(0, input.rowsLenght).map(j -> (r[j] * input.matrix[j][i])).sum())
+                        .toArray())
+                .toArray(int[][]::new);
+        return new Matrix(result);
 
-    </section>
-
-    <section>
-        <title>EPAM: Refactoring</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
-    </section> 
+    }
+]]>
+        </programlisting> 
+A feladat azt kérte, hogy for és while ciklusok használata nélkül írjuk meg ezt a methodot. Ezt streamekkel, és lambda kifejezésekkel tehetjük meg. Először is átkonvertáljuk streammé az első mátrixunkat, ezek által lesz egy streamünk, aminek minden eleme egy tömb lesz, és a számossága a streamnek egyenlő lesz a végeredmény mátrix sorainak a számával. Ezek után a map methoddal a streamünk minden elemét tudjuk módosítani. Célunk, hogy a meglévő tömbök számát ne, csak számosságát és értékeit változtassuk meg. Ha a számosságát változtatjuk meg ezeknek a tömböknek a második mátrixunknak oszlopainak számára akkor az egyenlő lesz a végeredményként kapni kívánt mátrixunknak oszlopainak számával. Először is az IntStream.range methoddal egy olyan streamet hozunk létre, aminek az elemei egyesével növekednek, a két attribútumként megadott szám között. Az első attribútum szereplni fog ebben a streamben, a második viszont már nem. Majd ezeket az értékeket (oszlopokat) fogjuk módosítani ugyanúgy a map methoddal. Felveszünk egy i változót, ami 0-tól az első mátrixunk oszlopainak a számáig (vagy a második mátrixunk sorainak a számáig) fog menni, ugyanúgy az IntStream.range methoddal. Ebben lesznek majd azok az elemek, amiket páronként össze fogunk szorozni (a map methoddal módosítani), majd később ezeket összeadni (a sum methoddal). Ezekért ez a kódcsipet fog felelni: 
+<programlisting language="java">
+<![CDATA[
+ 	.map(i -> IntStream.range(0, input.rowsLenght).map(j -> (r[j] * input.matrix[j][i])).sum())
+]]>
+        </programlisting> 
+Ezzel a kódrészlettel az oszlopokat, vagyis már a tényleges értékeket fogjuk módosítani, emiatt egy számot kell értékül kapnunk, és a sum miatt azt is fogunk kapni. Az e feletti mappal pedig a sorokat fogjuk módosítani amik tömbök lesznek, emiatt a stream tömbbé fogjuk átalakítani a toArray() methoddal. Majd végül a tömbökből álló streamet visszakonvertáljuk egy kétdimenziós tömbbé, egy mátrixxá .toArray(int[][]::new) methoddal.
+</para>
+</section>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 </chapter>           
