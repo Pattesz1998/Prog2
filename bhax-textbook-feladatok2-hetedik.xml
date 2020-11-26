@@ -5,39 +5,255 @@
             <keyword/>
         </keywordset>
     </info>
-
     <section>
         <title>FUTURE tevékenység editor</title>
         	<para>
-                Fealadatleírás
+            Javítsunk valamit a ActivityEditor.java JavaFX programon! https://github.com/nbatfai/future/tree/master/-cs/F6 Itt láthatjuk működésben az alapot: https://www.twitch.tv/videos/222879467
             </para>
+            <para>
+            A feladat megoldásához szükségünk van a JavaFX könyvtárra. A JavaFX azonban az sdk8-ban volt elérhető,
+            tehát a használatához szükségünk lesz az sdk8-ra. Ahhoz, hogy a meglévő sdk-t lecseréljük a megfelelőre
+            bátran használhatjuk az SDKMAN-t. Ennek segítségével képesek leszünk átváltani sdk8-ra, így könnyen
+            megoldhatóvá válik a feladat.
+            </para>
+            <para>
+            Miután már rendelkezünk a feladat megoldásához szükséges sdk verzióval a program futtathatóvá válik. A futtatást sikeresen
+            elvégezhetjük, mivel nem kapunk szintaktikai hibát. Azonban ezzel szemben található benne szemantikai hiba.
+            Az egyik ilyen hiba, új altevékenység létrehozásánál ütközik ki, ugyanis a programunk nem tud több új altevékenységet
+            létrehozni. Ahhoz hogy ez megoldható legyen szükségünk lesz némi módosításra a kódban. 
+            Az altevékenység létrehozásnál meg kell adnunk egy egy while ciklust és növelnünk kell az altevékenységek számát is. Ha
+            sikeresen létrejön az altevékenység, akkor kilépünk a ciklusból egy break utasítással, ha viszont sikertelen
+            a létrehozás akkor növeljük az i értéket és újra indul a ciklusunk.
+            </para>
+            <para>
+            <programlisting language="java">
+                <![CDATA[
+                javafx.scene.control.MenuItem subaMenuItem = new javafx.scene.
+                control.MenuItem("Új altevékenység");// "New
+                // 
 
+                subactivity 
+                ")
+                ; 
+                addMenu.getItems().add(subaMenuItem);
+                subaMenuItem.setOnAction((javafx.event.ActionEvent evt) -> {
+                java.io.File file = getTreeItem().getValue();
+                int i = 1;
+                while (true) {
+                java.io.File f = new java.io.File(
+                file.getPath() + System.getProperty("file.separator
+                ") + "Új altevékenység" + i); // PLACEHOLDER
+                //
+                HERE 
+                if (f.mkdir()) {
+                javafx.scene.control.TreeItem<java.io.File> newAct
+                // rr.println("Cannot create " + f.getPath())rr.println 
+                ("Cannot create " +
+                // f.getPath())rr.println("Cannot create " + f.getPath 
+                ())rr.println("Cannot
+                // create " + f.getPath()) = new javafx.scene.control.
+                TreeItem<java.io.File>(f,
+                // new javafx.scene.image.ImageView(actIcon));
+                = new FileTreeItem(f, new javafx.scene.image.ImageView(
+                actIcon));
+                getTreeItem().getChildren().add(newAct);
+                break;
+                } else {
+                i++;
+                System.err.println("Cannot create " + f.getPath());
+                }
+                }
+                });
+                ]]>
+        </programlisting>   
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="future.png" scale="70" />
+                </imageobject>
+            </mediaobject>
+            </para>
     </section>
 
     <section>
         <title>OOCWC Boost ASIO hálózatkezelése</title>
         	<para>
-                Fealadatleírás
+            Mutassunk rá a scanf szerepére és használatára! https://github.com/nbatfai/robocaremulator/blob/master/-justine/rcemu/src/carlexer.ll
             </para>
-
+            <para>
+            <programlisting language="java">
+                <![CDATA[
+                while ( std::sscanf ( data+nn, "<OK %d %u %u %u>%n", &idd, &f, &t, ←-
+                &s, &n ) == 4 )
+                {
+                nn += n;
+                gangsters.push_back ( Gangster {idd, f, t, s} );
+                }
+                ]]>
+            </programlisting> 
+            </para>
+            <para>
+            Ebben a kódrészletben az sscanf található meg. Ez abban különbözik a scanf-tol hogy a formázott szövegből
+            olvasunk be. Az hogy a szöveg milyen módon van megformázva az idézőjelek között található meg: <command>OK %d %u %u %u</command>
+            Ez alól azonban kivétel, az idézőjelben lévő szöveg végén található %n. Ez ugyanis azt mutatja
+            meg, hogy hány paraméter lett beolvasva. A sor végi feltétel viszgálat is ehhez kapcsolódik. Ugyanis, ha az
+            egyenlőség teljesül, abban az esetben ez az azt jelenti, hogy mind a négy paraméter beolvasása sikeres. A sscanf elején található
+            data+nn azt adja meg, hogy honnan kezdodjön meg a belovasás. Ahhoz hogy ez mindig más értéket adjon és
+            ne olvassuk többször ugyan azt a sort, az nn értékét növelnünk kell. Ezt a ciklusmagban tehetjük meg. Az nn-hez mindig hozzá
+            kell adnunk a beolvasott adatok mennyiségét, ezáltal a data+nn, mindig a beolvasandó rész elejére fog
+            muatatni. A ciklusmagban pedig a push_back segítségével a kódunk a gangsters-hez hozzáfűzzi a beolvasott adatokat.
+            </para>
     </section>
-
     <section>
         <title>SamuCam</title>
         	<para>
-                Fealadatleírás
+                Mutassunk rá a webcam (pl. Androidos mobilod) kezelésére ebben a projektben: https://github.com/-nbatfai/SamuCam
             </para>
-
+            <para>
+            <programlisting language="c++">
+                <![CDATA[
+                #include "SamuCam.h"
+                SamuCam::SamuCam ( std::string videoStream, int width = 176, int
+                height = 144 )
+                : videoStream ( videoStream ), width ( width ), height ( height )
+                {
+                openVideoStream();
+                }
+                SamuCam::~SamuCam ()
+                {
+                } 
+                void SamuCam::openVideoStream()
+                {
+                videoCapture.open ( videoStream );
+                videoCapture.set ( CV_CAP_PROP_FRAME_WIDTH, width );
+                videoCapture.set ( CV_CAP_PROP_FRAME_HEIGHT, height );
+                videoCapture.set ( CV_CAP_PROP_FPS, 10 );
+                }
+                ]]>
+            </programlisting> 
+            </para>
+            <para>
+            A program azzal kezdődik, hogy a parancssorban megkapott IP címet a használni kívánt webkamerának
+            átadjuk paraméterként. Ezután a videoCapture.open ( videoStream ); segítségével megnyitjuk a webkamerát
+            majd a .set metódusok segítségével beállítjuk a szélességet, a magasságot és végül megadjuk az FPS értékét is.
+            </para>
+            <para>
+            <programlisting language="java">
+                <![CDATA[
+                void SamuCam::run()
+                {
+                cv::CascadeClassifier faceClassifier;
+                std::string faceXML = "lbpcascade_frontalface.xml"; // https://
+                github.com/Itseez/opencv/tree/master/data/lbpcascades
+                if ( !faceClassifier.load ( faceXML ) )
+                {
+                qDebug() << "error: cannot found" << faceXML.c_str();
+                return;
+                }
+                cv::Mat frame;
+                ]]>
+            </programlisting> 
+            </para>
+            <para>
+            Miután a webkamera meg lett nyitva és az értékei be lettek állítva, szükség van egy CascadeClassifier-re
+            amely a beolvassa lbpcascade_frontalface.xml-t. Ennek segítségével lehet elvégezni a képek elemzését. A .load metódus olvassa be az emberi arcot, és ha ez nem sikerül akkor hibát ad eredményül.
+            </para>
+            <para>
+            <programlisting language="java">
+                <![CDATA[
+                while ( videoCapture.isOpened() )
+                {
+                QThread::msleep ( 50 );
+                while ( videoCapture.read ( frame ) )
+                {
+                if ( !frame.empty() )
+                {
+                cv::resize ( frame, frame, cv::Size ( 176, 144 ), 0, 0, 
+                cv::INTER_CUBIC );
+                std::vector<cv::Rect> faces;
+                cv::Mat grayFrame;
+                cv::cvtColor ( frame, grayFrame, cv::COLOR_BGR2GRAY );
+                cv::equalizeHist ( grayFrame, grayFrame );
+                faceClassifier.detectMultiScale ( grayFrame, faces, 
+                1.1, 4, 0, cv::Size ( 60, 60 ) );
+                if ( faces.size() > 0 )
+                {
+                cv::Mat onlyFace = frame ( faces[0] ).clone();
+                QImage* face = new QImage ( onlyFace.data,
+                onlyFace.cols,
+                onlyFace.rows,
+                onlyFace.step,
+                QImage::Format_RGB888 ) 
+                ;
+                cv::Point x ( faces[0].x-1, faces[0].y-1 );
+                cv::Point y ( faces[0].x + faces[0].width+2, faces
+                [0].y + faces[0].height+2 );
+                cv::rectangle ( frame, x, y, cv::Scalar ( 240, 230, 
+                200 ) );
+                emit faceChanged ( face );
+                }
+                QImage* webcam = new QImage ( frame.data,
+                frame.cols,
+                frame.rows,
+                frame.step,
+                QImage::Format_RGB888 )
+                ;
+                emit webcamChanged ( webcam );
+                }
+                QThread::msleep ( 80 );
+                } 
+                if ( ! videoCapture.isOpened() )
+                {
+                openVideoStream();
+                }
+                }
+                }
+                ]]>
+            </programlisting> 
+            </para>
+            <para>
+            Miután a beolvasás megtörténik a képet átméretezi és interpolálja a kód. Ezután a színét szürkére állítja
+            majd az equalizeHist metódus segítségével kiegyenlíti a képek hisztogrammját. Ezt követően a detectMultiScale segítségével arcokat keres a képen. Ha talál arcot akkor létrehoz belőle egy QImage-t majd az emit
+            segítségével küld egy jelet amit a SamuBrain fog feldolgozni. Ezt követően létrejön még egy QImage amit még egy signal küldés is követ. Végül 80 milliszekundum várakozás után a ciklus visszatér az elejére.
+            A ciklusból abban az esetben fogunk kilépni, ha a videoCapture bezárásra kerül.
+            </para>
     </section>
-
     <section>
         <title>BrainB</title>
         	<para>
-                Fealadatleírás
+                Mutassuk be a Qt slot-signal mechanizmust ebben a projektben: https://github.com/nbatfai/esport-talentsearch
             </para>
-
+            <para>
+            Ebben a feladatban slot-signal mechanizmussal imerkedünk meg. A slot-signal mechanizmus arra szolgál,
+            hogy objektumok között lehessen kommunikálni. A BrainBWin.cpp-ben található meg ennek a kód részlete.
+            </para>
+            <para>
+            <programlisting language="java">
+                <![CDATA[
+                connect ( brainBThread, &BrainBThread::heroesChanged ,
+                this, &BrainBWin::updateHeroes );
+                connect ( brainBThread, &BrainBThread::endAndStats,
+                this, &BrainBWin::endAndStats );
+                ]]>
+            </programlisting> 
+            </para>
+            <para>
+            Alapvetően egy eseményhez kötött esemény zajlik le, melyet a connect köt össze. Tehát 
+            a brainBThread küld egy SIGNAL-t az emit segítségével, amit a connect felfog és ennek hatására fut le a
+            megadott metódus. Jelen példában kettő connect is található. Az első esetben érkezik egy heroesChanged
+            signal melynek hatására lefut az updateHeroes metódus. A másik esetben pedig az endAndStats signal
+            érkezik melynek hatására az endAndStats metódus fut le.
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="brainb.png" scale="70" />
+                </imageobject>
+            </mediaobject>
+            </para>
     </section>
-
+    
     <section>
         <title>OSM térképre rajzolása</title>
         	<para>
@@ -56,19 +272,62 @@
 
     <section>
         <title>EPAM: ASCII Art</title>
-        	<para>
-                Fealadatleírás
-            </para>
+        <para>
+            Az ASCII vel készített képek (Art-ok) napjainkban igencsak népszerűvé váltak, számos érdekes, akár vicces képet is készíthetünk ASCII segítségével.
+        </para>
+        <para>
+            Nem lehetetlen megcsinálnunk, azonban sok időt venne igénybe, ezért inkább nézzük meg kód segítségével:
+            A kódunk beolvassa a képet, figyelnünk kell arra, hogy jó filenevet adjunk meg, mivel gyakran, ilyen okokból kifolyólag fog rosszul működni a programunk..
+        </para>
+        <programlisting language="java"><![CDATA[
+ try {
+            img = ImageIO.read(new File("teszt2.jpg"));
+        } catch (IOException e) {
+        }
+]]></programlisting>
+        <para>Ezután színenként "szétbontjuk a képet" és minden színhez rendelünk egy Ascii karaktert is helyettesítésként. Nézzünk meg egy példát: Pl, ha a színkód nagyobb,mint 240(ergó fehér),akkor oda nem tesz semmit, míg ha kisebb,mint 60(fekete), oda egy "@" karakter kerül. 
+              Ennek az eredményét pedig egy txt fájlba menti ki számunkra a program.
+        </para>
+            <programlisting language="java"><![CDATA[
+for (int i = 0; i < img.getHeight(); i++) {
+            for (int j = 0; j < img.getWidth(); j++) {
+                Color pixcol = new Color(img.getRGB(j, i));
+                pixval = (((pixcol.getRed() * 0.30) + (pixcol.getBlue() * 0.59) + (pixcol
+                        .getGreen() * 0.11)));
+                print(strChar(pixval));
+            }
+            try {
+                prntwrt.println("");
+                prntwrt.flush();
+                filewrt.flush();
+            } catch (Exception ex) {
+            }
+        }
+    }
 
-    </section>
-
-    <section>
-        <title>EPAM: Titkos üzenet, száll a gépben!</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
-    </section>
-        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+    public String strChar(double g) {
+        String str = " ";
+        if (g >= 240) {
+            str = " ";
+        } else if (g >= 210) {
+            str = ".";
+        } else if (g >= 190) {
+            str = "*";
+        } else if (g >= 170) {
+            str = "+";
+        } else if (g >= 120) {
+            str = "^";
+        } else if (g >= 110) {
+            str = "&";
+        } else if (g >= 80) {
+            str = "8";
+        } else if (g >= 60) {
+            str = "#";
+        } else {
+            str = "@";
+        }
+        return str;
+    }
+]]></programlisting>
+    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 </chapter>           

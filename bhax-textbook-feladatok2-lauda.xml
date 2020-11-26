@@ -9,23 +9,233 @@
     <section>
         <title>Port scan</title>
         	<para>
-                Fealadatleírás
+                Mutassunk rá ebben a port szkennelő forrásban a kivételkezelés szerepére!
+                https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/ch01.html#id527287
             </para>
-
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            public class KapuSzkenner {
+    
+    public static void main(String[] args) {
+        
+        for(int i=0; i<1024; ++i)
+            
+            try {
+                
+                java.net.Socket socket = new java.net.Socket(args[0], i);
+                
+                System.out.println(i + " figyeli");
+                
+                socket.close();
+                
+            } catch (Exception e) {
+                
+                System.out.println(i + " nem figyeli");
+                
+            }
+    }
+    
+}
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            A feladatban használt kódunk arra szolgál, hogy a parancssori argomentumként kapott IP címen megpróbálunk TCP
+            kapcsolatokat létrehozni. A kapcsolatot az alábbi kóddal próbáljunk meg felépíteni:<command>java.net.Socket socket
+            = new java.net.Socket(args[0], i);</command>. Ha sikeresen kiépítjük a kapcsolatot akkor kiírja, hogy figyeli-e a portot és
+            utána bezárjuk a socketet. Abban az esetben, viszont ha sikertelen a kapcsolat építés, akkor egy IOException-t kapunk és kiírjuk
+            hogy nem figyeli a portot. Az alábbi képen láthatjuk, hogy melyik portot figyeljük, míg a többinél IOException lép fel.
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="kapuszkenner.png" scale="70" />
+                </imageobject>
+            </mediaobject>
+            </para>
     </section>
 
     <section>
         <title>AOP</title>
         	<para>
-                Fealadatleírás
+                Szőj bele egy átszövő vonatkozást az első védési programod Java átiratába! (Sztenderd védési feladat volt korábban.)
             </para>
-
+            <para>  
+            A feladatunk az volt, hogy az AspectJ segítségével az LZWBinfa java verziójához/átiratához (védési programhoz) fűzzünk hozzá valamilyen átszövő vonatkozást. 
+            Én azt a megoldást választottam, hogy a binfahoz hozzáfüzöm a kiírás preorder és postorder változatát. Nézzük is meg ennek a módszernek a megvalósítását.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            int melyseg = 0;
+            public pointcut kiir(LZWBinFa.Csomopont elem, java.io.PrintWriter os)
+            : call(public void kiir(LZWBinFa.Csomopont, java.io.PrintWriter)) && args(elem,os);
+            after (LZWBinFa.Csomopont elem, java.io.PrintWriter os) : kiir(elem,os)
+            {
+            try {
+            preOrder(elem,new PrintWriter("pre-order.txt"));
+            } catch (FileNotFoundException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            }
+            melyseg = 0;
+            try {
+            postOrder(elem,new PrintWriter("post-order.txt"));
+            } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            }
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Elsőként a pointcut segítségével megadjuk azt a helyet, ahol a binfában szeretnék végrehajtani magát a szövést. Jelen esetben ezt a kiir függvény segítségével fogjuk megejteni. 
+            Ha ezzel megvagyunk, akkor a call utasítás segítségével megadjuk azt, hogy mi az a metódus amit hozzá akarunk fűzni az eredeti kódhoz. Ezt követően meg kell határoznunk, hogy a pointcut elé vagy után szeretnénk hozzáfűzni a hozzáfűzendő kódot.
+            Erre szolgál majd az after utasítás, mely a kiir függvény után fog lefutni és hozzá fogja fűzni a preorder és postorder kiiratást a binfához. A preOrder metódus egy új txt file-ba fogja kiírni a binfa preorder bejárását.
+            Esetleges hiba esetén egy Exception-t fogunk kapni. A postOrder metódus lényegében ugyan ezt a módszert fogja elvégezni csak postorder módon.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            public void preOrder(LZWBinFa.Csomopont elem, java.io.PrintWriter os){
+            if (elem != null) {
+            for (int i = 0; i < melyseg; ++i) {
+            os.write("---");
+            }
+            os.print(elem.getBetu());
+            os.print("(");
+            os.print(melyseg - 1);
+            os.println(")");
+            ++melyseg;
+            preOrder(elem.egyesGyermek(), os);
+            preOrder(elem.nullasGyermek(), os);
+            --melyseg;
+            os.flush();
+            }
+            }
+            public void postOrder(LZWBinFa.Csomopont elem, java.io.PrintWriter os){
+            if (elem != null) {
+            ++melyseg;
+            postOrder(elem.egyesGyermek(), os);
+            postOrder(elem.nullasGyermek(), os);
+            --melyseg;
+            for (int i = 0; i < melyseg; ++i) {
+            os.print("---");
+            }
+            os.print(elem.getBetu());
+            os.print("(");
+            os.print(melyseg - 1);
+            os.println(")");
+            os.flush();
+            }
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Itt látható az a két fabejárás, melyek hozzá lettek fűzve az eredeti binfa kódhunkhoz, ezek segítségével elvégezzük a két féle kiírást.
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="lzwhozzafuzes.png" scale="70" />
+                </imageobject>
+            </mediaobject>
+            </para>
     </section>
 
     <section>
         <title>Android Játék</title>
         	<para>
-                Fealadatleírás, ZÖLD FELADAT
+                Írjunk egy egyszerű Androidos „játékot”! Építkezzünk például a 2. hét „Helló, Android!” feladatára!
+            </para>
+            <para>
+           A feladatunk megoldásához egy egyszerűbb akasztófa játékot írtunk. A játék során a klasszikus akasztófa játékot játszhatjuk, annyi különbséggel, hogy a programunk nem rajzolja ki magát az akasztófát hanem számolja a fennmaradó életeket. 
+           A feladat megoldásához az Android Studio fejlesztői környezetet használtam, melyben java nyelven lett megírva a kód. Kezdjük is el a kód elemzését.
+           Alapvetően mivel ezt a feladatot még anno amikor a barátaim csinálták a prog2-t velük közösen dolgoztuk ki, így a program jelenleg nem fut le nekem mivel azóta másik gépem van, így a következő órára be tudom fejezni az éppen készülőben lévő Amőbás játékomat.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            ArrayList<Character> vonalak = new ArrayList<>();
+            int Lifes = 5;
+            String amostaniszo;
+            List<String> Words = new ArrayList<>();
+            @Override
+            protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+            final Button Game_start = (Button)findViewById(R.id.Game_Start) ←-
+            ;
+            final Button Restart = (Button)findViewById(R.id.restart);
+            final Button Quit = (Button)findViewById(R.id.quit);
+            final EditText char_imput = findViewById(R.id.Char_imput);
+            final TextView Word = findViewById(R.id.word);
+            final TextView Result = findViewById(R.id.result);
+            final TextView Elet = findViewById(R.id.elet);
+            Game_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            Game_start.setVisibility(View.INVISIBLE);
+            char_imput.setVisibility(View.VISIBLE);
+            Elet.setVisibility(View.VISIBLE);
+            Elet.setText("Elet: " + Lifes);
+            ReadWords(Words);
+            amostaniszo = getWord(Words);
+            Set_LinesFirs(amostaniszo,Word,vonalak);
+            }
+            });
+            ]]>
+            </programlisting>
+            </para>
+            <para>  
+            Először fel kell vennünk a játékhoz a szükséges változókat. A vonalak ArrayList-ben kerülnek eltárolásra a játék aktuális menete alapján. 
+            Ezt látjuk kiírva a képernyőn, amelyben alapból _ karakterek vannak, de ahogyan a betűk kitalálásra kerülnek, ezeket felülírjuk.
+            A Lifes változó értéke határozza meg, hogy mennyi életünk van még, míg az amostaniszo változóban tároljuk az éppen aktuális szót melyet ki kell találnunk. 
+            Az utolsó létrehozott változó pedig a Words. Ezen listában töltodik be a szavak listája melyből random, véletlenszerűen kiválasztásra kerül a kitalálandó szó.
+            Ezt követően a képernyőn megjelenő elemek deklarálása történik hogy a későbbiekben lehessen velük dolgozni. 
+            </para>
+            <para>
+            Most pedig lássuk a start gomb funkcióját. A játék indítása gombra kattintva megjelenik az élet számláló, illetve egy
+            mező ahová a tippünket tudjuk beírni, továbbá generálásra kerül a szó melyet ki kell találni. A szó generálásához
+            a getWord metódust alkalmazzuk, amely véletlenszűen választ egy szót a beolvasott listából.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            Restart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            Lifes = 5;
+            Restart.setVisibility(View.INVISIBLE);
+            char_imput.setVisibility(View.VISIBLE);
+            Elet.setVisibility(View.VISIBLE);
+            Elet.setText("Elet: " + Lifes);
+            Word.setText(" ");
+            Result.setVisibility(View.INVISIBLE);
+            ReadWords(Words);
+            amostaniszo = getWord(Words);
+            Set_LinesFirs(amostaniszo,Word,vonalak);
+            }
+            });
+            Quit.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+            finish();
+            System.exit(0);
+            }
+            });
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="akasztofa.png" scale="70" />
+                </imageobject>
+            </mediaobject>
             </para>
 
     </section>
@@ -33,59 +243,65 @@
     <section>
         <title>Junit teszt</title>
         	<para>
-                Fealadatleírás
+                A https://progpater.blog.hu/2011/03/05/labormeres_otthon_avagy_hogyan_dolgozok_fel_egy_pedat poszt kézzel számított mélységét és szórását dolgozd be egy Junit tesztbe (sztenderd védési feladat volt korábban).
             </para>
-
+            <para>
+            A feladatunk szerint, az LZWBinfa java verzióján kell Junit tesztet végrehajtani. A Junit teszt lényege, hogy ellenőrzést hajt végre a megírt kódon, hogy az az elvárásainknak megfelelő módon működik-e, vagy sem. 
+            Ha jól működik a megírt kódunk, akkor a teszt sikeresen lefut, ellenben ha a teszt sikertelen akkor errort fogunk kapni eredményül. Most pedig nézzük meg a kódunkat.
+            </para>
+            <para>
+            <programlisting language="java">
+            <![CDATA[
+            import static org.junit.jupiter.api.Assertions.*;
+            public class BinfaTest {
+            LZWBinFa binfa = new LZWBinFa();
+            @org.junit.Test
+            public void tesBitFeldolg() {
+            for (char c : "01111001001001000111".toCharArray()) {
+            binfa.egyBitFeldolg(c);
+            }
+            org.junit.Assert.assertEquals(4, binfa.getMelyseg(), 0.0);
+            org.junit.Assert.assertEquals(2.75, binfa.getAtlag(), 0.001);
+            org.junit.Assert.assertEquals(0.957427, binfa.getSzoras(), 0.0001);
+            }
+            }
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            A kód létrehoz egy binfa példányt, majd egy for ciklus segítségével végigmegyünk a megadott stringen és feldolgozzuk azt. 
+            Ezután az assertEquals metódus elvégzi az ellenorzést. Az első paraméterként megadjuk hogy milyen eredményt várunk a tesztelni kívánt metódustól, a második paraméter maga a metódus amit
+            teszteli akarunk, a harmadik pedig egy olyan érték lesz ami azt adja meg hogy mekkora eltérést engedünk meg a teszt során.
+            </para>
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="binfajava.png" scale="70" />
+                </imageobject>
+            </mediaobject>
+            </para>
     </section>     
 
     <section>
-        <title>OSCI</title>
+     <title>EPAM: JSON szerializáció</title>
         	<para>
-                Fealadatleírás
+                Adott az alábbi kódrészlet. Mi történik, ha az input változó 1F, “string” vagy pedig null? Meghívódik e minden esetben a finally ág? Válaszod indokold! 
             </para>
-
-    </section>
-
-    <section>
-        <title>OSCI2</title>
-        	<para>
-                Fealadatleírás, KÉK FELADAT
+            <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="epam.png" scale="70" />
+                </imageobject>
+            </mediaobject>
             </para>
-
-    </section>
-
-    <section>
-        <title>OSCI3</title>
-        	<para>
-                Fealadatleírás, KÉK FELADAT
+            <para>
+            Amennyiben az input változó értéke null, abban az esetben a egy Runtime Exception-t (futásidejű kivételt) fogunk kapni, mivel ez a parent, azaz szülő osztálya a Child és Parent kivételeknek, így az <command> instanceof </command> hamis értéket fog visszaadni. Az előzőekből adódóan a trycatch blokkokon belül csak az utolsó blokk fogja "elkapni."
             </para>
-
-    </section>
-
-    <section>
-        <title>EPAM: DI</title>
-        	<para>
-                Fealadatleírás
+             <para>
+            Második esetként nézzük meg azt az eshetőséget, amennyiben az imput változó 1F értékű azaz "string" típusú. Ebben az esetben egy ParentExceptiont fogunk visszakapni, mivel a szülő osztály nem instance-ja a a gyerek osztálynak. Ez ugye fordított esetben igaz lenne, azonban a trycatch-en belül a catch ágak sorrendje miatt jelenesetben nincs létjogosultsága. A trycatch blokkok közül ő a második blokkban kerül "elkapásra."
             </para>
-
-    </section>
-
-    <section>
-        <title>EPAM: JSON szerializáció</title>
-        	<para>
-                Fealadatleírás
+            <para>
+            Végül, de nem utolsó sorban, amikor az input "float" típusú, akkor egy ChildExceptiont fogunk visszakapni, mely már az első catch blokkban elkapásra kerül, mivel a ChildException saját magának egy instance-e lesz.         
             </para>
-
-    </section>
-
-    <section>
-        <title>EPAM: Kivételkezelés</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
-    </section>
-
-        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 </chapter>           
