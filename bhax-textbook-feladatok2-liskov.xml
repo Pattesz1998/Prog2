@@ -13,11 +13,11 @@
  https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog2_1.pdf"(93-99 fólia) (számos példa szerepel az elv megsértésére az UDPROG repóban, lásd pl. source/binom/BatfaiBarki/madarak/)
             </para>
             <para>
-            A Liskov elv lényege az objektumorientált programok helyes tervezése. A könnyű érthetőség kedvéért egy példán keresztül nézzük meg ezt. Vegyük például azt hogy van egy madár osztályunk. 
+            A Liskov elv lényege az objektumorientált programok helyes tervezése. A könnyű megérthetőség kedvéért egy egyszerű példán keresztül nézzük is meg ezt. Vegyük például azt hogy van egy madár osztályunk. 
             Ebben létrehozunk egy tulajdonságot ami kimondja hogy a madarak tudnak repülni. Ez után ha származtatunk két osztályt a
             madár osztályból, legyen egy sas és egy pingvin osztály, akkor az megsérti a liskov elvet. A elv szerint
             ugyanis rossz a tervezés. Ez abból derül ki hogy mivel származtatott osztályról van szó a pingvin osztály
-            megkapja a reülés tulajdonságot. Ez viszont hiba, mivel a pingvin nem tud repülni. Ha nem akarjuk
+            megkapja a repülés tulajdonságot. Ez viszont hiba, mivel a pingvin nem tud repülni. Ha nem akarjuk
             megsérteni az elvet akkor a megoldás az hogy újra kell tervezni a programot. Ezt például úgy lehet megtenni
             ha a repülés tulajdonságát elkülönítjük egy repülo madarak osztályba és ez után a sas a repülő madarak
             osztályába fog tartozni a pingvin pedig csak a madarak osztályába. Így a tervezés már jó lesz és nem lesz megsérve a Liskov elv.
@@ -26,30 +26,29 @@
             <programlisting language="java">
             <![CDATA[
             class Madar {
-public void repul() {};
-};
-class Program {
-public void fgv ( Madar madar ) {
-madar.repul();
-}
-};
-class Sas extends Madar
-{};
-class Pingvin extends Madar
-{};
-class Liskov{
-public static void main(String[] args)
-{
-Program kod = new Program();
-Madar mad = new Madar();
-kod.fgv ( mad );
-Sas sass = new Sas();
-kod.fgv ( sass );
-Pingvin pingvinn = new Pingvin();
-kod.fgv ( pingvinn );
-}
-}
-
+            public void repul() {};
+            };
+            class Program {
+            public void fgv ( Madar madar ) {
+            madar.repul();
+            }
+            };
+            class Sas extends Madar
+            {};
+            class Pingvin extends Madar
+            {};
+            class Liskov{
+            public static void main(String[] args)
+            {
+            Program kod = new Program();
+            Madar mad = new Madar();
+            kod.fgv ( mad );
+            Sas sass = new Sas();
+            kod.fgv ( sass );
+            Pingvin pingvinn = new Pingvin();
+            kod.fgv ( pingvinn );
+            }
+            }
             ]]>
             </programlisting>
             </para>
@@ -57,31 +56,29 @@ kod.fgv ( pingvinn );
             <programlisting language="java">
             <![CDATA[
             class Madar {
-public:
-virtual void repul() {};
-};
-class Program {
-public:
-void fgv ( Madar &madar ) {
-madar.repul();
-}
-};
-class Sas : public Madar
-{};
-class Pingvin : public Madar
-{};
-int main ( int argc, char **argv )
-{
-Program program;
-Madar madar;
-program.fgv ( madar );
-Sas sas;
-program.fgv ( sas );
-Pingvin pingvin;
-program.fgv ( pingvin );
-}
-
-
+            public:
+            virtual void repul() {};
+            };
+            class Program {
+            public:
+            void fgv ( Madar &madar ) {
+            madar.repul();
+            }
+            };
+            class Sas : public Madar
+            {};
+            class Pingvin : public Madar
+            {};
+            int main ( int argc, char **argv )
+            {
+            Program program;
+            Madar madar;
+            program.fgv ( madar );
+            Sas sas;
+            program.fgv ( sas );
+            Pingvin pingvin;
+            program.fgv ( pingvin );
+            }
             ]]>
             </programlisting>
             </para>
@@ -123,48 +120,47 @@ program.fgv ( pingvin );
             <programlisting language="java">
             <![CDATA[
             class Szulo
-{
-public void szulo_vagyok()
-{
-System.out.println("Én vagyok a szülö.");
-}
-};
-class Gyerek extends Szulo
-{
-public void gyerek_vagyok()
-{
-System.out.println("Én vagyok a gyerek.");
-}
-public static void main(String[] args)
-{
-Szulo apa = new Szulo();
-Gyerek joska = new Gyerek();
-apa.szulo_vagyok();
-joska.gyerek_vagyok();
-joska.szulo_vagyok();
-apa.gyerek_vagyok(); //ez így nem m˝uködik mivel az ˝os ←-
-osztály nem fér hozzá a származtatott osztályhoz ezáltal ←-
-a benne lév˝o metódusokhoz sem
-}
-};
-
+            {
+            public void szulo_vagyok()
+            {
+            System.out.println("Én vagyok a szülö.");
+            }
+            };
+            class Gyerek extends Szulo
+            {
+            public void gyerek_vagyok()
+            {
+            System.out.println("Én vagyok a gyerek.");
+            }
+            public static void main(String[] args)
+            {
+            Szulo apa = new Szulo();
+            Gyerek joska = new Gyerek();
+            apa.szulo_vagyok();
+            joska.gyerek_vagyok();
+            joska.szulo_vagyok();
+            apa.gyerek_vagyok(); //ez így nem m˝uködik mivel az ˝os ←-
+            osztály nem fér hozzá a származtatott osztályhoz ezáltal ←-
+            a benne lév˝o metódusokhoz sem
+            }
+            };
             ]]>
             </programlisting>
             </para>
             <para>
-            Létrehozásra kerül a két osztály, majd a mainben mindegyik osztályból egy-egy példány. Láthatjuk hogy a
-kódban jelölve van a származtatás. A Gyerek osztály létrehozásánál ott van az <command>extends</command> kulcsszó. Ez arra
-szolgál hogy mögötte feltüntessünk egy másik osztályt, amely által az meg lesz jelölve ősnek. Mivel van  
+            Létrehozásra kerül a két osztály, majd a mainben mindegyik osztályból egy-egy példány. Láthatjuk, hogy a
+kódban jelölve van a származtatás. A Gyerek osztály létrehozásánál ott van az <command>extends</command> kulcsszó, mely arra
+szolgá, hogy mögötte feltüntessünk egy másik osztályt, amely által az meg lesz jelölve ős osztálynak. Mivel van  
 ős osztálya ő egy származtatottá válik. Végül személtetés céljából a példányokra meghívásra kerül, 
 a szülő osztály, valamint a gyerek osztály metódusa is. A gyerek osztály tudja használni a szülő
 osztály függvényét, míg a szülő nem tudja használni a gyerek osztályét.
             </para>
             <para>
-            Azonban, ha mégis megpróbáljuk az ős osztálynak a példányára meghívni a származtatott osztály függvényét akkor 
-az hibát fog eredményezni.
+            Abban az esetben, ha mégis megpróbáljuk az ős osztálynak a példányára meghívni a származtatott osztály függvényét, akkor 
+az számunkra hibát fog eredményezni.
             </para>
             <para>
-             Most pedig következzen a C++-os megoldás. Látható hogy lényeges különbség nincs a Javahoz képest. Ami
+            Most pedig következzen a C++-os megoldás. Látható hogy lényeges különbség nincs a Javahoz képest. Ami
             változik az mindösszesen annyi, hogy másként van megjelölve a származtatás. A futás során is ugyanarra az eredményre
             jutunk.
             </para>
@@ -172,33 +168,33 @@ az hibát fog eredményezni.
             <programlisting language="c++">
             <![CDATA[
             #include <iostream>
-class Szulo
-{
-public:
-void szulo_vagyok()
-{
-std::cout << "Én vagyok a szülö." << std::endl;
-}
-};
-class Gyerek : public Szulo
-{
-public:
-void gyerek_vagyok()
-{
-std::cout << "Én vagyok a gyerek." << std::endl;
-}
-};
-int main ( int argc, char **argv )
-{
-Szulo szulo;
-Gyerek gyerek;
-szulo.szulo_vagyok();
-gyerek.gyerek_vagyok();
-gyerek.szulo_vagyok();
-//szulo.gyerek_vagyok(); ez így nem m˝uködik mivel az ˝os ←-
-osztály nem fér hozzá a származtatott osztályhoz ezáltal a ←-
-benne lév˝o metódusokhoz sem
-}
+            class Szulo
+            {
+            public:
+            void szulo_vagyok()
+            {
+            std::cout << "Én vagyok a szülö." << std::endl;
+            }
+            };
+            class Gyerek : public Szulo
+            {
+            public:
+            void gyerek_vagyok()
+            {
+            std::cout << "Én vagyok a gyerek." << std::endl;
+            }
+            };
+            int main ( int argc, char **argv )
+            {
+            Szulo szulo;
+            Gyerek gyerek;
+            szulo.szulo_vagyok();
+            gyerek.gyerek_vagyok();
+            gyerek.szulo_vagyok();
+            //szulo.gyerek_vagyok(); ez így nem m˝uködik mivel az ˝os ←-
+            osztály nem fér hozzá a származtatott osztályhoz ezáltal a ←-
+            benne lév˝o metódusokhoz sem
+            }
             ]]>
             </programlisting>
             </para>
@@ -225,30 +221,13 @@ benne lév˝o metódusokhoz sem
             ahol a 10 a 8-on eredmény kiszámításához több mint 3 perc kellett.
             </para>
     </section>
-
-    <section>
-        <title>Hello, Android!</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
-    </section>    
-
-    <section>
-        <title>Hello, SMNIST for Humans!</title>
-        	<para>
-                Fealadatleírás, PIROS FELADAT
-            </para>
-
-    </section> 
-
     <section>
         <title>Ciklomatikus komplexitás</title>
         	<para>
-                Számoljuk ki valamelyik programunk függvényeinek ciklomatikus komplexitását! Lásd a fogalom tekintetében a https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog2_2.pdf(77-79 fóliát)!
+            Számoljuk ki valamelyik programunk függvényeinek ciklomatikus komplexitását! Lásd a fogalom tekintetében a https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog2_2.pdf(77-79 fóliát)!
             </para>
             <para>
-             A ciklomatikus komplexitás lényege hogy egy képlet alapján, számban kifejezve megmondja egy adott
+            A ciklomatikus komplexitás lényege, hogy egy képlet alapján, számban kifejezve megmondja egy adott
             programkódról annak összetettségét. A képlet úgy épül fel, hogy egy gráfot képezünk a kódból majd ennek
             segítségével számolunk. Ha kész a gráf akkor a következőt kell tenni. A gráf éleinek a számából ki kell
             vonni a csúcspontok számát majd hozzá kell adni a program egységek számánk kétszeresét.
@@ -268,31 +247,5 @@ benne lév˝o metódusokhoz sem
            
        
 
-    </section> 
-
-    <section>
-        <title>EPAM: Interfész evolúció Java-ban</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
-    </section>  
-
-    <section>
-        <title>EPAM: Liskov féle helyettesíthetőség elve, öröklődés</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
-    </section>  
-
-    <section>
-        <title>EPAM: Interfész, Osztály, Absztrak Osztály</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
-    </section>    
-        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 </chapter>

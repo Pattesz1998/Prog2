@@ -62,14 +62,6 @@ return 0;
     </section>
 
     <section>
-        <title>Másoló-mozgató szemantika</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
-    </section>
-
-    <section>
         <title>Hibásan implementált RSA törése</title>
         	<para>
     Készítsünk betű gyakoriság alapú törést egy hibásan implementált RSA kódoló: https://arato.inf.unideb.hu/-batfai.norbert/UDPROG/deprecated/Prog2_3.pdf (71-73 fólia) által készített titkos szövegen.
@@ -440,25 +432,70 @@ public class BugousStuffProducer {
             lezárással, abban az esetben, az adatok semelyik esetben sem fognak bekerülni célállományba.</para>
         <para>Erre a problémára egyfajta megoldás lehet, amennyiben megpróbálunk nagyobb figyelmet fordítani a 
             meghívni a close() metódus meghívására, vagy ezen kívűl használhatjuk a java interfészét (ez is egy létező megoldás lehet..). 
-            Nézzük is meg a kódunkat picikét átalakítva:</para>  
-    </section>
+            Nézzük is meg a kódunkat picikét átalakítva:</para>
+            <para>
+		    Kezdeti programunk futtatása során láthatjuk ugyan azt, hogy létrejön a megadott szövegfájlunk,
+			viszont, ez nem tartalmazza magát a szöveget. Mindez abból következik, hogy a <command>close</command> metódust egy "overrideolt"
+			finalize metódusban hívtuk meg. A finalize lefutása azonban cseppet sem kiszámítható, ezen belül
+			nem érdemes elhelyeznünk a program futásához nélkülözhetetlen utasításokat. A fenti példában is 
+			látható volt, hogy a program futási ideje lényegesen gyorsabban véghez mehet, mint hogy a finalize metódus
+			egyszer is meghívódna, hibás működést eredményezve.
+		</para>
+		<programlisting language="Java">
+        <![CDATA[import java.io.FileWriter;
+        import java.io.IOException;
+        import java.io.Writer;
 
 
-    <section>
-        <title>EPAM: Kind of equal</title>
-        	<para>
-                Fealadatleírás
-            </para>
+        public class BugousStuffProducer implements AutoCloseable {
+            private final Writer writer;
+            
+                @Override
+            public void close() throws Exception {
+                System.out.println("close...");
+                writer.close();
+            }
+            
+            public BugousStuffProducer(String outputFileName) throws  IOException {
+                writer = new FileWriter(outputFileName);
+            }
 
-    </section>
+            public void writeStuff() throws IOException {
+                writer.write("Stuff");
+                //a writer.flush() meghívásával biztosíthatjuk, hogy 
+                //a szöveg kiírása megtörténik.
+                //writer.flush();
+            }
 
-    <section>
-        <title>EPAM: Java GC</title>
-        	<para>
-                Fealadatleírás
-            </para>
+            @Override
+            public void finalize() throws IOException {
+                System.out.println("finalize...");
+                writer.close();
+            }
+            
+            
+            public static void main(String[] args) throws IOException, Exception {
+        //        BugousStuffProducer b = new BugousStuffProducer("teszt.txt");
+        //        b.writeStuff();
 
-    </section>     
-        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                //az AutoCloseable interfész implementálása után használhatunk
+                //egy Java try with resources utasítást a megfelelő működés biztosításához
+                try (BugousStuffProducer b = new BugousStuffProducer("teszt.txt")) {
+                    b.writeStuff();
+                }
+                //egy egyszerű try blokk finally ágát is használhatjuk
+                // a close metódus meghívására
+        //        BugousStuffProducer b = new BugousStuffProducer("teszt.txt");
+        //        try {
+        //            b.writeStuff();
+        //        } finally {
+        //            System.out.println("finally close...");
+        //            b.writer.close();
+        //        }
+            }
+            
+        }
+        ]]>
+		</programlisting>
+    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 </chapter>           

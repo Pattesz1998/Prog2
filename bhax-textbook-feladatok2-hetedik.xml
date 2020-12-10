@@ -11,19 +11,19 @@
             Javítsunk valamit a ActivityEditor.java JavaFX programon! https://github.com/nbatfai/future/tree/master/-cs/F6 Itt láthatjuk működésben az alapot: https://www.twitch.tv/videos/222879467
             </para>
             <para>
-            A feladat megoldásához szükségünk van a JavaFX könyvtárra. A JavaFX azonban az sdk8-ban volt elérhető,
-            tehát a használatához szükségünk lesz az sdk8-ra. Ahhoz, hogy a meglévő sdk-t lecseréljük a megfelelőre
-            bátran használhatjuk az SDKMAN-t. Ennek segítségével képesek leszünk átváltani sdk8-ra, így könnyen
+            A feladat megoldásához szükségünk van a <command>JavaFX</command> könyvtárra. A JavaFX azonban az <command>sdk8-ban</command> volt elérhető,
+            tehát a használatához szükségünk lesz az <command>sdk8</command>-ra. Ahhoz, hogy a meglévő sdk-t lecseréljük a megfelelőre
+            bátran használhatjuk az <command>SDKMAN</command>-t. Ennek segítségével képesek leszünk átváltani sdk8-ra, így könnyen
             megoldhatóvá válik a feladat.
             </para>
             <para>
             Miután már rendelkezünk a feladat megoldásához szükséges sdk verzióval a program futtathatóvá válik. A futtatást sikeresen
-            elvégezhetjük, mivel nem kapunk szintaktikai hibát. Azonban ezzel szemben található benne szemantikai hiba.
-            Az egyik ilyen hiba, új altevékenység létrehozásánál ütközik ki, ugyanis a programunk nem tud több új altevékenységet
-            létrehozni. Ahhoz hogy ez megoldható legyen szükségünk lesz némi módosításra a kódban. 
-            Az altevékenység létrehozásnál meg kell adnunk egy egy while ciklust és növelnünk kell az altevékenységek számát is. Ha
+            elvégezhetjük, mivel nem kapunk szintaktikai hibát, ezzel szemben található benne szemantikai hiba.
+            Az egyik ilyen hiba, az új altevékenység létrehozásánál ütközik ki, ugyanis a programunk nem tud több új altevékenységet
+            létrehozni. Ahhoz, hogy ez megoldható legyen szükségünk lesz némi módosításra a kódban. 
+            Az altevékenység létrehozásnál meg kell adnunk egy-egy while ciklust és növelnünk kell az altevékenységek számát is. Ha
             sikeresen létrejön az altevékenység, akkor kilépünk a ciklusból egy break utasítással, ha viszont sikertelen
-            a létrehozás akkor növeljük az i értéket és újra indul a ciklusunk.
+            a létrehozás akkor növeljük az i értéket és újraindítjuk a ciklusunkat.
             </para>
             <para>
             <programlisting language="java">
@@ -94,8 +94,8 @@
             </programlisting> 
             </para>
             <para>
-            Ebben a kódrészletben az sscanf található meg. Ez abban különbözik a scanf-tol hogy a formázott szövegből
-            olvasunk be. Az hogy a szöveg milyen módon van megformázva az idézőjelek között található meg: <command>OK %d %u %u %u</command>
+            Ebben a kódrészletben az <command>sscanf</command> található meg. Ez abban különbözik a scanf-tol hogy a formázott szövegből
+            olvasunk be. Az, hogy a szöveg milyen módon van megformázva az idézőjelek között található meg: <command>OK %d %u %u %u</command>
             Ez alól azonban kivétel, az idézőjelben lévő szöveg végén található %n. Ez ugyanis azt mutatja
             meg, hogy hány paraméter lett beolvasva. A sor végi feltétel viszgálat is ehhez kapcsolódik. Ugyanis, ha az
             egyenlőség teljesül, abban az esetben ez az azt jelenti, hogy mind a négy paraméter beolvasása sikeres. A sscanf elején található
@@ -253,81 +253,125 @@
             </mediaobject>
             </para>
     </section>
-    
-    <section>
-        <title>OSM térképre rajzolása</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
-    </section>     
-
-    <section>
-        <title>EPAM: XML feldolgozás</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
-    </section>
 
     <section>
         <title>EPAM: ASCII Art</title>
-        <para>
-            Az ASCII vel készített képek (Art-ok) napjainkban igencsak népszerűvé váltak, számos érdekes, akár vicces képet is készíthetünk ASCII segítségével.
-        </para>
-        <para>
-            Nem lehetetlen megcsinálnunk, azonban sok időt venne igénybe, ezért inkább nézzük meg kód segítségével:
-            A kódunk beolvassa a képet, figyelnünk kell arra, hogy jó filenevet adjunk meg, mivel gyakran, ilyen okokból kifolyólag fog rosszul működni a programunk..
-        </para>
-        <programlisting language="java"><![CDATA[
- try {
-            img = ImageIO.read(new File("teszt2.jpg"));
-        } catch (IOException e) {
-        }
-]]></programlisting>
-        <para>Ezután színenként "szétbontjuk a képet" és minden színhez rendelünk egy Ascii karaktert is helyettesítésként. Nézzünk meg egy példát: Pl, ha a színkód nagyobb,mint 240(ergó fehér),akkor oda nem tesz semmit, míg ha kisebb,mint 60(fekete), oda egy "@" karakter kerül. 
-              Ennek az eredményét pedig egy txt fájlba menti ki számunkra a program.
-        </para>
-            <programlisting language="java"><![CDATA[
-for (int i = 0; i < img.getHeight(); i++) {
-            for (int j = 0; j < img.getWidth(); j++) {
-                Color pixcol = new Color(img.getRGB(j, i));
-                pixval = (((pixcol.getRed() * 0.30) + (pixcol.getBlue() * 0.59) + (pixcol
-                        .getGreen() * 0.11)));
-                print(strChar(pixval));
-            }
-            try {
-                prntwrt.println("");
-                prntwrt.flush();
-                filewrt.flush();
-            } catch (Exception ex) {
-            }
-        }
-    }
+        <para><emphasis>ASCII Art in Java! Implementálj egy Java parancssori programot, ami beolvas
+                egy képet és kirajzolja azt a parancssorba és / vagy egy szöveges fájlba is ASCII
+                karakterekkel.</emphasis></para>
+        <para> Megoldás forrása: </para>
+        <para><link
+                xlink:href="https://github.com/epam-deik-cooperation/epam-deik-prog2/tree/master/week-7/ascii-art"
+            /></para>
+        <para><link
+                xlink:href="https://www.ascii-art-generator.org/"
+            /></para>
+        <para>Az ASCII Art képkonvertáló két fő összetevőből áll: először is, a képet szürke színekké
+            konvertáljuk, majd az egyes képkockákat(pixeleket), a a szürke árnyalati értéktől függően átalakítjuk egy adott karakterré.
+            Nem lehetetlen megcsinálnunk, azonban sok idot venne igénybe, ezért inkább nézzük meg kód segítségével::</para>
+        <programlisting language="java">
+<![CDATA[ 
+package com.epam.training.asciiprinter;
 
-    public String strChar(double g) {
-        String str = " ";
-        if (g >= 240) {
-            str = " ";
-        } else if (g >= 210) {
-            str = ".";
-        } else if (g >= 190) {
-            str = "*";
-        } else if (g >= 170) {
-            str = "+";
-        } else if (g >= 120) {
-            str = "^";
-        } else if (g >= 110) {
-            str = "&";
-        } else if (g >= 80) {
-            str = "8";
-        } else if (g >= 60) {
-            str = "#";
-        } else {
-            str = "@";
-        }
-        return str;
-    }
-]]></programlisting>
-    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+
+public class AsciiPrinter {
+
+	private static final char[] ASCII_PIXELS = { '$', '#', '*', ':', '.', ' ' };
+	private static final byte[] NEW_LINE = "\n".getBytes();
+
+	private OutputStream outputStream;
+	private BufferedImage image;
+
+	public AsciiPrinter(OutputStream outputStream, BufferedImage image) {
+		super();
+		this.outputStream = outputStream;
+		this.image = image;
+	}
+
+	public void print() throws IOException {
+		for (int i = 0; i < image.getHeight(); i++) {
+			for (int j = 0; j < image.getWidth(); j++) {
+				outputStream.write(getAsciiChar(image.getRGB(j, i)));
+			}
+			outputStream.write(NEW_LINE);
+		}
+	}
+
+	public static char getAsciiChar(int pixel) {
+		return getAsciiCharFromGrayScale(getGreyScale(pixel));
+	}
+
+	public static int getGreyScale(int argb) {
+		int red = (argb >> 16) & 0xff;
+		int green = (argb >> 8) & 0xff;
+		int blue = (argb) & 0xff;
+		return (red + green + blue) / 3;
+	}
+
+	public static char getAsciiCharFromGrayScale(int greyScale) {
+		return ASCII_PIXELS[greyScale / 51];
+	}
+
+}
+
+]]>      </programlisting>
+        <para>Első lépésként fel kell vennünk a <command>AsciiPrinter</command> osztályunkat, ez egy publikus java osztály lesz, amelyben a képünk kirajzolásához
+            szükséges ASCII karaktereket soroljuk fel egy listába töm9rítve : $, #, *, :, ., whitespace karakterek.
+            Ezt követően a <command>NEW_LINE</command> parancs segítségével, definiáljuk magát az új sor karaktert, amely újabb sorok kezdéséért és byte-ok beolvasásáért
+            lesz felelős.</para>
+        <para>Az <command>asciiprinter</command> metódus, egy outputstream-et(outputStream) és egy képet(BufferedImage) kér be paraméterként.
+         A metóduson belül a <command>super()</command> paraméter;  olyan mint a this(); paraméter, mindkettő egyaránt az ősosztályunk konstruktorára hivatkozik.</para>
+        <para>A <command>print()</command> segítségével, egy mátrixbejárást fogunk végrehajtani, tehát lényegében, végigmegyünk a kép összes
+            pixelén (kockáján), majd ezeket ascii karakterek segítségével kiíratjuk, megkapva végeredményül magát a képet, soronként újsor karaktert
+            dobva.</para>
+        <para>A <command>getAsciiChar</command> változónk egy képkockát(pixelt) vár paraméteri bemenetként, majd visszaadja a pixel
+            szürke árnyalatát.</para>
+        <para>Maga a szürke színre történő konvertálás a következőképpen néz ki:</para>
+        <para>Maguk a pixelszínek(képkockaszínek) három különálló összetevőre bontható: vörös, zöld és kék értékekre (ezek a programozásból már jól ismert RGB színek, vagy angolul RED,GREEN,BLUE). A
+            pixel szürke árnyalatának kiszámításához, ezen 3 RGB szín értéket kell átlagolnunk.
+            Ezt láthatjuk a return-nél. A main-ben meghívódik számunkra a print() metódust a képünkre, mely segítségével
+            megtörténik magának a képünknek a kiíratása csupa ascii karakterből, (természetesen az azonos színeket ugyanazzal a
+            karakterrel írva.)</para>
+        
+        <programlisting language="java">
+<![CDATA[ 
+package com.epam.training;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.imageio.ImageIO;
+
+import com.epam.training.asciiprinter.AsciiPrinter;
+
+public class Main {
+
+	public static void main(String[] args) throws IOException {
+		String imageName = args[0];
+		String textFileName = args.length != 2 ? null : args[1];
+		OutputStream outputStream = textFileName == null ? System.out : new FileOutputStream(textFileName);
+		BufferedImage image = ImageIO.read(new File(imageName));
+
+		new AsciiPrinter(outputStream, image).print();
+	}
+
+}
+
+]]>      </programlisting>
+        <para>A világhálón számos ASCII képgeneráló oldal található, ezek közül a google keresési találatait böngészve véletlenszerűen kiválasztottam egyet:</para>
+        <para><link xlink:href="https://www.ascii-art-generator.org/"/></para>
+        <para>Működése rendkívül egyszerű, töltsük fel a konvertálni kívánt képet, majd kattintsunk a start gombra</para>
+        <para> Miután egy random gamer széket átkonvertáltam a program segítségével, az alábbi eredményt kaptam kimenetül:</para>
+        <para><inlinemediaobject>
+                <imageobject>
+                    <imagedata fileref="ascii.png" scale="50"/>
+                </imageobject>
+            </inlinemediaobject></para>
+    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>           

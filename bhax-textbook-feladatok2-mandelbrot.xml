@@ -238,31 +238,5 @@ zárójelben adhatjuk meg a kapcsolat típusát: link(nest)(B.n -- A.s);.
             <para>
             A diagramm kirajzolása után az alábbi eredményt kapjuk:<link xlink:href="https://github.com/Pattesz1998/Prog2/blob/master/robocar-1.pdf"/>      
             </para>
-    </section>
-
-    <section>
-        <title>EPAM: Neptun tantárgyfelvétel modellezése UML-ben</title>
-        	<para>
-                Modellezd le a Neptun rendszer tárgyfelvételéhez szükséges objektumokat UML diagramm segítségével.
-            </para>
-
-    </section>
-
-    <section>
-        <title>EPAM: Neptun tantárgyfelvétel UML diagram implementálás</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
-    </section>
-
-    <section>
-        <title>EPAM: OO modellezés</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
-    </section>    
-        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 </chapter>                

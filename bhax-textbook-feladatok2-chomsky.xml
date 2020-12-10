@@ -34,14 +34,6 @@
     </section>
 
     <section>
-        <title>OOCWC lexer</title>
-        	<para>
-               
-            </para>
-
-    </section>
-
-    <section>
         <title>l334d1c4 6</title>
         	<para>
             Írj olyan OO Java vagy C++ osztályt, amely leet cipherként működik, azaz megvalósítja ezt a betű helyettesítést: https://simple.wikipedia.org/wiki/Leet (Ha ezt első részben nem tetted meg, akkor írasd ki és
@@ -231,22 +223,6 @@
     </section>
 
     <section>
-        <title>Paszigráfia Rapszódia LuaLaTeX vizualizáció</title>
-        	<para>
-                
-            </para>
-
-    </section>
-
-    <section>
-        <title>Perceptron osztály</title>
-        	<para>
-                
-            </para>
-
-    </section>
-
-    <section>
         <title>EPAM: Order of everything</title>
         	<para>
                 Collection-ok rendezése esetén jellemzően futási időben derül ki, ha olyan típusú objektumokat
@@ -260,33 +236,126 @@
                 Ahol az input Collection Integer típusú. Természetesen más típusokkal is működnie
                 kell, feltéve, hogy implementálják a Comparable interface-t
             </para>
-            <para>
-            Ezt a részt csak elkezdtem mármint az első EPAMOS feladatot, viszont a szünetben még ki fogom egészíteni, illetve amiket nem csináltam meg még eddig feladatokat meg fogom csinálni, hogy teljes legyen a könyv :)
-            </para>
-            <para>Programunk során generikusokkal fogunk dolgozni. De, hogy mire is jó valójában a generikus? Egyik nagy előnye, az-az, hogy nem kell előre megadnunk azt hogy milyen paramétert várunk, megadhatunk számára egy általános jelölést is,
-            ezáltal képesek leszünk példányosítás esetén ráhivatkozni. Ebben az esetben specifikáljuk ezt az értéket, emiatt egy általánosabb metódust vagy osztályt kapunk majd eredményül.
-            A fentiekből adódóan képesek leszünk létrehozni egy összehasonlító alkalmazást, ugyanis nem kell megadunk előre, azt, hogy mely elemeket szeretnénk összehasonlítani, hanem gerenikusok segítségével hivatkozhatunk majd rá.
-            Ezen okból kifolyólag viszont, a létrehozás során külön figyelmet kell fordítanunk az elemek összehasonlíthatóságának vizsgálására is.
-            </para>
+		<para>
+		    Amennyiben alapul veszünk egy rendezést végző algoritmust, az általában csak futási időben detektálhatja,
+			ha a rendezendő elemeket nem tudjuk egymással összehasonlítani. Egy generikus típus 
+			használatával, bizonyos eseteknél akár már a futtatási idő alatt is képesek vagyunk felismerni a programunkban rejlő hibát.
+			(szintaktikai hiba)
+		</para>
+		<programlisting language="Java">
+<![CDATA[import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+public class CollectionPelda {
+    
+    static class A {
+        A(int aa)  { a = aa; }
+        public int a;
+    };
+    
+    
+    public static <T extends Comparable> List<T> createorderedList(Collection<T> l) {
+        List<T> eredmeny = new ArrayList<>(l.size());
+        eredmeny.addAll(l);
+        Collections.sort(eredmeny);
+        return eredmeny;
+    }
 
-    </section>
-
-    <section>
-        <title>EPAM: Bináris keresés és Buborék rendezés implementálása</title>
-        	<para>
-                
-            </para>
-
-    </section>
-
-    <section>
-        <title>EPAM: Saját HashMap implementáció</title>
-        	<para>
-            
-            </para>
-
-    </section>
+    public static void main(String[] args) {
+        List<Integer> l = new ArrayList<>();
         
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+        l.add(1);
+        l.add(10);
+        l.add(5);
+        
+        
+        for (Integer i: l) {
+            System.out.println(i);
+        }
+        
+        List<Integer> l2 = createorderedList(l);
+        
+        System.out.println("-----------Rendezett createOrderedList------------");
+        for (Integer i: l2) {
+            System.out.println(i);
+        }
+        
+        Collections.sort(l);
+        System.out.println("-----------Rendezett------------");
+        for (Integer i: l) {
+            System.out.println(i);
+        }
+        
+        
+        List ll = new ArrayList();
+        ll.add(18);
+        ll.add("abc");
+        
+        //Collections.sort(ll);
+        //List<Integer> l3 = createorderedList(ll);
+        
+        List<A> la = new ArrayList<>();
+        la.add(new A(1));
+        la.add(new A(10));
+        la.add(new A(5));
+        
+        //List<Integer> l4 = createorderedList(la);
+        
+    }
+    
+}
+]]>
+		</programlisting>
+		<para>
+		    A generikus típus megadásánál az <command>extends Comparable</command> használata miatt ezesetben már a metódus használata közben, fordítási időben láthatjuk a hibát, amennyiben a rendezendő objektumok egymással
+			nem összehasonlíthatóak. A rendezett Collection visszaadásához pedig létrejön egy megfelelő elemeket tartalmazó lista.
+		</para>
+		<programlisting language="Java">
+<![CDATA[public static <T extends Comparable> List<T> createorderedList(Collection<T> l) {
+        List<T> eredmeny = new ArrayList<>(l.size());
+        eredmeny.addAll(l);
+        Collections.sort(eredmeny);
+        return eredmeny;
+    }
+]]>
+		</programlisting>
+		<para>
+		    A í<command>comparable</command> interfész nem implementáló A osztály példányait tartalmazó lista átadása
+			a metódusnak szintaktikai hibát eredményez.
+		</para>
+		<programlisting language="Java">
+<![CDATA[public class CollectionPelda {
+    
+    static class A {
+        A(int aa)  { a = aa; }
+        public int a;
+    };
+	
+	List<A> la = new ArrayList<>();
+        la.add(new A(1));
+        la.add(new A(10));
+        la.add(new A(5));
+        
+        //List<Integer> l4 = createorderedList(la);
+]]>
+		</programlisting>
+		<para>
+		    A nyers típusú lista esetén ilyen metódussal is csak futási időben ismerhető
+			fel egy esetleges probléma, azonban ezen lista alkalmazása java nyelvben nem annyira ajánlott.
+		</para>
+		<programlisting language="Java">
+<![CDATA[List ll = new ArrayList();
+        ll.add(18);
+        ll.add("abc");
+        
+        //Collections.sort(ll);
+        //List<Integer> l3 = createorderedList(ll);
+]]>
+		</programlisting>
+    </section>     
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 </chapter>           

@@ -140,7 +140,7 @@
             <para>
             <mediaobject>
                 <imageobject>
-                    <imagedata fileref="lzwhozzafuzes.png" scale="70" />
+                    <imagedata fileref="lzwhozzafuzes.png" scale="80" />
                 </imageobject>
             </mediaobject>
             </para>
@@ -152,88 +152,287 @@
                 Írjunk egy egyszerű Androidos „játékot”! Építkezzünk például a 2. hét „Helló, Android!” feladatára!
             </para>
             <para>
-           A feladatunk megoldásához egy egyszerűbb akasztófa játékot írtunk. A játék során a klasszikus akasztófa játékot játszhatjuk, annyi különbséggel, hogy a programunk nem rajzolja ki magát az akasztófát hanem számolja a fennmaradó életeket. 
-           A feladat megoldásához az Android Studio fejlesztői környezetet használtam, melyben java nyelven lett megírva a kód. Kezdjük is el a kód elemzését.
-           Alapvetően mivel ezt a feladatot még anno amikor a barátaim csinálták a prog2-t velük közösen dolgoztuk ki, így a program jelenleg nem fut le nekem mivel azóta másik gépem van, így a következő órára be tudom fejezni az éppen készülőben lévő Amőbás játékomat.
+            Feladatunk megoldásához én egy egyszerűbb java alapú androidos amőba játékot írtam, melyben két játékos játszik egymás ellen, amikor a játékos saját szimbolumával 3 egymás melletti kockát birtokol, abban az esetben nyer.
+            Az első programlisting részben megírjuk az xml részt, melyben létrehozzuk a különböző kockákat melyekre kattintva el tudjuk helyezni a saját szimbólumunkat a játéktéren.
+            Ezt a LinearLayout segítségével tehetjük meg, melyen belül Button parancs segítségével adhatjuk meg a különböző kockákat (melyek kattintásra aktívvá válnak.)
             </para>
             <para>
-            <programlisting language="java">
+            <programlisting language="xml">
             <![CDATA[
-            ArrayList<Character> vonalak = new ArrayList<>();
-            int Lifes = 5;
-            String amostaniszo;
-            List<String> Words = new ArrayList<>();
-            @Override
-            protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
-            final Button Game_start = (Button)findViewById(R.id.Game_Start) ←-
-            ;
-            final Button Restart = (Button)findViewById(R.id.restart);
-            final Button Quit = (Button)findViewById(R.id.quit);
-            final EditText char_imput = findViewById(R.id.Char_imput);
-            final TextView Word = findViewById(R.id.word);
-            final TextView Result = findViewById(R.id.result);
-            final TextView Elet = findViewById(R.id.elet);
-            Game_start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            Game_start.setVisibility(View.INVISIBLE);
-            char_imput.setVisibility(View.VISIBLE);
-            Elet.setVisibility(View.VISIBLE);
-            Elet.setText("Elet: " + Lifes);
-            ReadWords(Words);
-            amostaniszo = getWord(Words);
-            Set_LinesFirs(amostaniszo,Word,vonalak);
-            }
-            });
+            <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/header_text"
+        android:gravity="center_horizontal"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Amőba játék"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_text"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:id="@+id/btn0"
+                android:tag="0"
+                android:textSize="60sp"
+                android:background="@android:color/darker_gray"
+                tools:text="0">
+            </Button>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:id="@+id/btn1"
+                android:tag="1"
+                android:textSize="60sp"
+                android:background="@android:color/darker_gray"
+                tools:text="1">
+            </Button>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:id="@+id/btn2"
+                android:tag="2"
+                android:textSize="60sp"
+                android:background="@android:color/darker_gray"
+                tools:text="2">
+            </Button>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:id="@+id/btn3"
+                android:tag="3"
+                android:textSize="60sp"
+                android:background="@android:color/darker_gray"
+                tools:text="3">
+            </Button>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:id="@+id/btn4"
+                android:tag="4"
+                android:textSize="60sp"
+                android:background="@android:color/darker_gray"
+                tools:text="4">
+            </Button>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:id="@+id/btn5"
+                android:tag="5"
+                android:textSize="60sp"
+                android:background="@android:color/darker_gray"
+                tools:text="5">
+            </Button>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:id="@+id/btn6"
+                android:tag="6"
+                android:textSize="60sp"
+                android:background="@android:color/darker_gray"
+                tools:text="6">
+            </Button>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:id="@+id/btn7"
+                android:tag="7"
+                android:textSize="60sp"
+                android:background="@android:color/darker_gray"
+                tools:text="7">
+            </Button>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:id="@+id/btn8"
+                android:tag="8"
+                android:textSize="60sp"
+                android:background="@android:color/darker_gray"
+                tools:text="8">
+            </Button>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
             ]]>
             </programlisting>
             </para>
             <para>  
-            Először fel kell vennünk a játékhoz a szükséges változókat. A vonalak ArrayList-ben kerülnek eltárolásra a játék aktuális menete alapján. 
-            Ezt látjuk kiírva a képernyőn, amelyben alapból _ karakterek vannak, de ahogyan a betűk kitalálásra kerülnek, ezeket felülírjuk.
-            A Lifes változó értéke határozza meg, hogy mennyi életünk van még, míg az amostaniszo változóban tároljuk az éppen aktuális szót melyet ki kell találnunk. 
-            Az utolsó létrehozott változó pedig a Words. Ezen listában töltodik be a szavak listája melyből random, véletlenszerűen kiválasztásra kerül a kitalálandó szó.
-            Ezt követően a képernyőn megjelenő elemek deklarálása történik hogy a későbbiekben lehessen velük dolgozni. 
+            Ezt követően megírjuk magát a java kódot, melyben a különböző kapcsolatokat vizsgáljuk, illetve megvizsgáljuk a különböző mezők telítettségét (éppen rákattintottunk-e már rá)
             </para>
             <para>
-            Most pedig lássuk a start gomb funkcióját. A játék indítása gombra kattintva megjelenik az élet számláló, illetve egy
-            mező ahová a tippünket tudjuk beírni, továbbá generálásra kerül a szó melyet ki kell találni. A szó generálásához
-            a getWord metódust alkalmazzuk, amely véletlenszűen választ egy szót a beolvasott listából.
+            A végén meg kell vizsgálnunk, hogy egy adott szereplő nyert e, ehhez szükséges ismernünk az amőba szabályait, mely szerint ha 3 azonos szimbólumot birtoklunk keresztben, hosszában vagy függőlegesen, abban az esetben ez a játékos nyer.
+            Ezt követően a győztest kiíratjuk a kijelzőnk tetejére, hogy pl X a győztes.
             </para>
             <para>
             <programlisting language="java">
             <![CDATA[
-            Restart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            Lifes = 5;
-            Restart.setVisibility(View.INVISIBLE);
-            char_imput.setVisibility(View.VISIBLE);
-            Elet.setVisibility(View.VISIBLE);
-            Elet.setText("Elet: " + Lifes);
-            Word.setText(" ");
-            Result.setVisibility(View.INVISIBLE);
-            ReadWords(Words);
-            amostaniszo = getWord(Words);
-            Set_LinesFirs(amostaniszo,Word,vonalak);
+            package com.example.tictactoe;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    Button btn0,btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8;
+    TextView headerText;
+
+    int PLAYER_O = 0;
+    int PLAYER_X = 1;
+
+    int activePlayer = PLAYER_O;
+
+    int[] filledPos = {-1,-1,-1,-1,-1,-1,-1,-1,-1};
+
+    boolean isGameActive = true;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        headerText = findViewById(R.id.header_text);
+        btn0 = findViewById(R.id.btn0);
+        btn1 = findViewById(R.id.btn1);
+        btn2 = findViewById(R.id.btn2);
+        btn3 = findViewById(R.id.btn3);
+        btn4 = findViewById(R.id.btn4);
+        btn5 = findViewById(R.id.btn5);
+        btn6 = findViewById(R.id.btn6);
+        btn7 = findViewById(R.id.btn7);
+        btn8 = findViewById(R.id.btn8);
+
+        btn0.setOnClickListener(this);
+        btn1.setOnClickListener(this);
+        btn2.setOnClickListener(this);
+        btn3.setOnClickListener(this);
+        btn4.setOnClickListener(this);
+        btn5.setOnClickListener(this);
+        btn6.setOnClickListener(this);
+        btn7.setOnClickListener(this);
+        btn8.setOnClickListener(this);
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        // Logic for button press
+
+        if(!isGameActive)
+            return;
+
+        Button clickedBtn = findViewById(v.getId());
+        int clickedTag = Integer.parseInt(v.getTag().toString());
+
+        if (filledPos[clickedTag] != -1){
+            return;
+        }
+
+        filledPos[clickedTag] = activePlayer;
+
+        if(activePlayer == PLAYER_O){
+            clickedBtn.setText("O");
+            clickedBtn.setBackground(getDrawable(android.R.color.holo_blue_bright));
+            activePlayer = PLAYER_X;
+            headerText.setText("X következik");
+        }else{
+            clickedBtn.setText("X");
+            clickedBtn.setBackground(getDrawable(android.R.color.holo_orange_light));
+            activePlayer = PLAYER_O;
+            headerText.setText("O következik");
+        }
+
+        checkForWin();
+    }
+    private void checkForWin(){
+        int[][] winningPos = {{0,1,2},{3,4,5},{6,7,8},{0,3,6},{1,4,7},{2,5,8},{0,4,8},{2,4,6}};
+
+        for(int i = 0; i < 8; i++){
+            int val0 = winningPos[i][0];
+            int val1 = winningPos[i][1];
+            int val2 = winningPos[i][2];
+
+            if(filledPos[val0] == filledPos[val1] && filledPos[val1] == filledPos[val2]){
+                if(filledPos[val0] != -1){
+
+                    isGameActive = false;
+
+                    if(filledPos[val0] == PLAYER_O)
+                        headerText.setText("O a győztes");
+                    else
+                        headerText.setText("X a győztes");
+                }
             }
-            });
-            Quit.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-            finish();
-            System.exit(0);
-            }
-            });
+        }
+    }
+}
             ]]>
             </programlisting>
             </para>
             <para>
             <mediaobject>
                 <imageobject>
-                    <imagedata fileref="akasztofa.png" scale="70" />
+                    <imagedata fileref="amobastart.png" scale="70" />
+                </imageobject>
+            </mediaobject>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="amobaeredmeny.png" scale="70" />
                 </imageobject>
             </mediaobject>
             </para>
@@ -283,10 +482,11 @@
     </section>     
 
     <section>
-     <title>EPAM: JSON szerializáció</title>
+     <title>EPAM: Kivételkezelés</title>
         	<para>
                 Adott az alábbi kódrészlet. Mi történik, ha az input változó 1F, “string” vagy pedig null? Meghívódik e minden esetben a finally ág? Válaszod indokold! 
             </para>
+            <para>Megoldás videó forrása: <link xlink:href="https://youtu.be/M29lotnvgBA"/></para>
             <para>
             <mediaobject>
                 <imageobject>
@@ -295,13 +495,40 @@
             </mediaobject>
             </para>
             <para>
-            Amennyiben az input változó értéke null, abban az esetben a egy Runtime Exception-t (futásidejű kivételt) fogunk kapni, mivel ez a parent, azaz szülő osztálya a Child és Parent kivételeknek, így az <command> instanceof </command> hamis értéket fog visszaadni. Az előzőekből adódóan a trycatch blokkokon belül csak az utolsó blokk fogja "elkapni."
+            Amennyiben az input változó értéke null, tehát a test metódus, null objektummal hívódik meg abban az esetben a egy Runtime Exception-t (futásidejű kivételt) fogunk kapni, mivel ez a parent, azaz szülő osztálya a Child és Parent kivételeknek, így az <command> instanceof </command> hamis értéket fog visszaadni. A try ágban így egyik feltétel sem fog teljesülni. Az előzőekből adódóan a trycatch blokkokon belül csak az utolsó blokk fogja "elkapni."
+            A fentiekből következően, az alábbi kimenetet fogjuk kapni:
+            <programlisting language="java">
+            <![CDATA[
+            Try!
+            Exception is caught!
+            Finally!
+            ]]>
+            </programlisting>
             </para>
              <para>
-            Második esetként nézzük meg azt az eshetőséget, amennyiben az imput változó 1F értékű azaz "string" típusú. Ebben az esetben egy ParentExceptiont fogunk visszakapni, mivel a szülő osztály nem instance-ja a a gyerek osztálynak. Ez ugye fordított esetben igaz lenne, azonban a trycatch-en belül a catch ágak sorrendje miatt jelenesetben nincs létjogosultsága. A trycatch blokkok közül ő a második blokkban kerül "elkapásra."
+            Második esetként nézzük meg azt az eshetőséget, amennyiben az imput változó 1F értékű azaz "string" típusú. Ebben az esetben a string objektumunk tesztelésénél egy ParentExceptiont fogunk visszakapni, mivel a szülő osztály nem instance-ja a a gyerek osztálynak. Ez ugye fordított esetben igaz lenne, azonban a trycatch-en belül a catch ágak sorrendje miatt jelenesetben nincs létjogosultsága. A trycatch blokkok közül ő a második blokkban kerül "elkapásra."
+            Őt a <command>ParentException e</command> catch ág fogja kezelni, ezért a <command>System.exit(1)</command> utasítás miatt, a program 1-es hibakóddal leáll, ezért nincs már lehetőségünk a továbbiakban arra, hogy a finally ágban lévő utasítások lefussanak.
+            Ebben az esetben, az alábbi kimenetet kapjuk eredményül:
+            <programlisting language="java">
+            <![CDATA[
+            Try!
+            Parent Exception is caught!
+            Command execution failed.
+            org.apache.commons.exec.ExecuteException: Process exited with an error: 1 (Exit value: 1)          
+            ]]>
+            </programlisting>
             </para>
             <para>
-            Végül, de nem utolsó sorban, amikor az input "float" típusú, akkor egy ChildExceptiont fogunk visszakapni, mely már az első catch blokkban elkapásra kerül, mivel a ChildException saját magának egy instance-e lesz.         
+            Végül, de nem utolsó sorban, amikor az input "float" típusú, akkor egy ChildExceptiont fogunk visszakapni, mely már az első catch blokkban elkapásra kerül, mivel a ChildException saját magának egy instance-e lesz. Itt a gyerek osztály a szülő osztály leszármazottja lesz, emiatt az <command>if</command> feltétel teljesülni fog.       
+            Float típusú input vizsgálat esetében, a test metódus számunkra egy kivételt (exception-t) fog dobni, ennek ellenére a finally ezesetben is sikeresen le tud futni
+            Az alábbi kimenetet kapjuk eredményül:
+            <programlisting language="java">
+            <![CDATA[
+            Try!
+            Child Exception is caught!
+            Finally!
+            ]]>
+            </programlisting>
             </para>
     </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 </chapter>           

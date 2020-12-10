@@ -9,50 +9,596 @@
     <section>
         <title>MNIST</title>
         	<para>
-                Fealadatleírás
+            Az alap feladat megoldása, +saját kézzel rajzolt képet is ismerjen fel,
+            https://progpater.blog.hu/2016/11/13/hello_samu_a_tensorflow-bol Háttérként ezt vetítsük le:
+            https://prezi.com/0u8ncvvoabcr/no-programming-programming/
             </para>
-
+            <para>
+            Feladatunkban az MNIST program segtíségével kell megvizsgálnunk, hogy a program felismeri-e a képen beadott számot. Ez egy bevezető szintű
+            Tensorflow program lesz, melyben "megtanítjuk" a programnak felismerni a képen látható kézzel írott arab
+            számokat 0-tól 9-ig. Kezdjük is el a programkódunk elemzését:
+            </para>
+            <para>
+            <programlisting language="python">
+            <![CDATA[
+            def readimg():
+                file = tf.read_file("nyolc.png")
+                img = tf.image.decode_png(file,1)
+                return img
+            def main(_):
+                mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True)
+                # Create the model
+                x = tf.placeholder(tf.float32, [None, 784])
+                W = tf.Variable(tf.zeros([784, 10]))
+                b = tf.Variable(tf.zeros([10]))
+                y = tf.matmul(x, W) + b
+                # Define loss and optimizer
+                y_ = tf.placeholder(tf.float32, [None, 10])
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            A kód két metódusból áll, az egyik a readimg, a másik a main. A readimg arra szolgál, hogy egy általunk
+            megadott képet beolvasson a program, és a képen látható számot megpróbálja majd felismerni. A main azzal
+            kezdődik, hogy létrehozzuk a modellünket, melyhez három segéd vektort használunk. Ezen vektorok segítségével
+            meghatározzuk az y értékét. Az x egy placeholder lesz, mely egy olyan érték, ami akkor kerül meghatározásra
+            amikor a tensorflow elvégez egy számítást. Ennek a placeholdernek 2 paramétere lesz: Az első paraméter a tf.float32, mely
+            azt határozza meg, hogy az eredmény egy 32 bites float érték lesz. A második paraméter egy tensor. Ennek
+            a tensornak két értéke van. Az első a None, ami azt jelenti hogy jelenleg nincs megadva, hanem majd a
+            példák számával fogjuk megadni. A második érték pedig a kép méretét jelenti. A W tartalmazza a súlyokat,
+            melyet a tanulás során optimalizál, viszont létrehozáskor egy tensor fog létrejönni ami nullákkal lesz feltöltve.
+            A b pedig azt az értéket hivatott képviselni mely megmondja hogy várt eredmény mennyire áll messze
+            a valóságtól. A kezdeti értéke itt is nulla lesz. Az y pedig ebből a három értékből kerül előállításra. A 
+            tf.matmul segítségével összeszorzásra kerül az x és a W, majd végül hozzáadásra kerül a b értéke is.
+            </para>
+            <para>
+            <programlisting language="python">
+            <![CDATA[
+            cross_entropy= tf.reduce_mean(tf.nn. 
+            softmax_cross_entropy_with_logits(logits = y, labels=y_))
+            train_step = tf.train.GradientDescentOptimizer(0.5).minimize( 
+            cross_entropy)
+            sess = tf.InteractiveSession()
+            # Train
+            tf.initialize_all_variables().run()
+            print("-- A halozat tanitasa")
+            for i in range(1000):
+            batch_xs, batch_ys = mnist.train.next_batch(100)
+            sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
+            if i % 100 == 0:
+            print(i/10, "%")
+            print("----------------------------------------------------------")
+            # Test trained model
+            print("-- A halozat tesztelese")
+            correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
+            accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+            print("-- Pontossag: ", sess.run(accuracy, feed_dict={x: mnist.test. 
+            images,
+            y_: mnist.test.labels}))
+            print("----------------------------------------------------------")
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            A következő lépés a tanítás lesz. A program megtanulja felismerni a képekről a számokat. Ehhez egy for ciklust fogunk
+            használni és lépésenként megtanítjuk neki felismerni a számokat. Egyszerre 100 képet dolgoz fel a tanulás során.
+            A haladásról százalékos kiírást láthatunk a képernyőnkön. Ezt követően mielőtt még "éles" futás közben kipróbálnánk a
+            programot meghatározzuk a pontosságot. Ez az érték azt mutatja majd meg, hogy milyen sikerességi aránnyal
+            ismerte fel az MNIST a beadott számokat.
+            </para>
+            <para>
+            <programlisting language="python">
+            <![CDATA[
+            print("-- A MNIST 42. tesztkepenek felismerese, mutatom a szamot, a 
+            tovabblepeshez csukd be az ablakat")
+            img = mnist.test.images[42]
+            image = img
+            matplotlib.pyplot.imshow(image.reshape(28, 28), cmap=matplotlib. 
+            pyplot.cm.binary)
+            matplotlib.pyplot.savefig("4.png")
+            matplotlib.pyplot.show()
+            classification = sess.run(tf.argmax(y, 1), feed_dict={x: [image]})
+            print("-- Ezt a halozat ennek ismeri fel: ", classification[0])
+            print("----------------------------------------------------------")
+            print("-- A sajat kezi 8-asom felismerese, mutatom a szamot, a 
+            tovabblepeshez csukd be az ablakat")
+            img = readimg()
+            image = img.eval()
+            image = image.reshape(28*28)
+            matplotlib.pyplot.imshow(image.reshape(28, 28), cmap=matplotlib. 
+            pyplot.cm.binary)
+            matplotlib.pyplot.savefig("8.png")
+            matplotlib.pyplot.show()
+            classification = sess.run(tf.argmax(y, 1), feed_dict={x: [image]})
+            print("-- Ezt a halozat ennek ismeri fel: ", classification[0])
+            print("----------------------------------------------------------")
+            if __name__ == ’__main__’:
+            parser = argparse.ArgumentParser()
+            parser.add_argument(’--data_dir’, type=str, default=’/tmp/tensorflow/ 
+            mnist/input_data’,
+            help=’Directory for storing input data’)
+            FLAGS = parser.parse_args()
+            tf.app.run()
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Végül pedig mehet az éles tesztelés. Az éles tesztről készült képernyőmentést, a védés során fogom bemutatni a jövő héten :)
+            </para>
     </section>
 
     <section>
         <title>Deep MNIST</title>
         	<para>
-                Fealadatleírás
+            Mint az előző, de a mély változattal. Segítő ábra, vesd össze a forráskóddal a
+            https://arato.inf.unideb.hu/batfai.norbert/NEMESPOR/DE/denbatfai2.pdf 8. fóliáját!
             </para>
-
-    </section>
-
-    <section>
-        <title>CIFAR-10</title>
-        	<para>
-                Fealadatleírás, ZÖLD FELADAT
+            <para>
+            A feladatunk nagy mértékben hasonló lesz, az eloző MNIST-es feladatunkhoz. Ezen verzióban is a gépi tanulást fogja végrehajtani a
+            kód, viszont most egy másik formában. Nem sok különbség van a két megoldásban, azonban ezek elég jelentősek. 
+            Az egyik ilyen külnbség pl: Hogy az y értékét más módon határozzuk meg és y_conv néven szerepel.
             </para>
-
-    </section>    
+            <para>
+            <programlisting language="python">
+            <![CDATA[
+            def deepnn(x):
+            """deepnn builds the graph for a deep net for classifying digits.
+            Args:
+            x: an input tensor with the dimensions (N_examples, 784), where 784 
+            is the
+            number of pixels in a standard MNIST image.
+            Returns:
+            A tuple (y, keep_prob). y is a tensor of shape (N_examples, 10), 
+            with values
+            equal to the logits of classifying the digit into one of 10 classes 
+            (the
+            digits 0-9). keep_prob is a scalar placeholder for the probability 
+            of
+            dropout.
+            """
+            # Reshape to use within a convolutional neural net.
+            # Last dimension is for "features" - there is only one here, since 
+            images are
+            # grayscale -- it would be 3 for an RGB image, 4 for RGBA, etc.
+            with tf.name_scope(’reshape’):
+            x_image = tf.reshape(x, [-1, 28, 28, 1])
+            # First convolutional layer - maps one grayscale image to 32 feature
+            maps.
+            with tf.name_scope(’conv1’):
+            W_conv1 = weight_variable([5, 5, 1, 32])
+            b_conv1 = bias_variable([32])
+            h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)
+            # Pooling layer - downsamples by 2X.
+            with tf.name_scope(’pool1’):
+            h_pool1 = max_pool_2x2(h_conv1)
+            # Second convolutional layer -- maps 32 feature maps to 64.
+            with tf.name_scope(’conv2’):
+            W_conv2 = weight_variable([5, 5, 32, 64])
+            b_conv2 = bias_variable([64])
+            h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)
+            # Second pooling layer.
+            with tf.name_scope(’pool2’):
+            h_pool2 = max_pool_2x2(h_conv2)
+            # Fully connected layer 1 -- after 2 round of downsampling, our 28x28 
+            image
+            # is down to 7x7x64 feature maps -- maps this to 1024 features.
+            with tf.name_scope(’fc1’):
+            W_fc1 = weight_variable([7 * 7 * 64, 1024])
+            b_fc1 = bias_variable([1024])
+            h_pool2_flat = tf.reshape(h_pool2, [-1, 7*7*64])
+            h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
+            # Dropout - controls the complexity of the model, prevents co- 
+            adaptation of
+            # features.
+            with tf.name_scope(’dropout’):
+            keep_prob = tf.placeholder(tf.float32)
+            h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
+            # Map the 1024 features to 10 classes, one for each digit
+            with tf.name_scope(’fc2’):
+            W_fc2 = weight_variable([1024, 10])
+            b_fc2 = bias_variable([10])
+            y_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
+            return y_conv, keep_prob
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Egy másik lényeges különbséget is szeretnék bemutatni, mégpedig, hogy az iteráció melyben a tanulás történik 1000 helyett 20000-szer fut le így a tanulás
+            menete lényegesen tovább tart. Ez az idő esetenként kb 15 percet is jelenthet.
+            </para>
+            <para>
+            <programlisting language="python">
+            <![CDATA[
+            with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            for i in range(20000):
+            batch = mnist.train.next_batch(50)
+            if i % 100 == 0:
+            train_accuracy = accuracy.eval(feed_dict={
+            x: batch[0], y_: batch[1], keep_prob: 1.0})
+            print(’step %d, training accuracy %g’ % (i, train_accuracy))
+            train_step.run(feed_dict={x: batch[0], y_: batch[1], keep_prob:
+            0.5})
+            print(’test accuracy %g’ % accuracy.eval(feed_dict={
+            x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0}))
+            saver = tf.train.Saver()
+            img = readimg()
+            image = img.eval(session=sess)
+            image = image.reshape(28*28)
+            matplotlib.pyplot.imshow(image.reshape(28, 28), cmap=matplotlib. 
+            pyplot.cm.binary)
+            matplotlib.pyplot.savefig("8.png")
+            matplotlib.pyplot.show()
+            classification = sess.run(tf.argmax(y_conv, 1), feed_dict={x: [ 
+            image], keep_prob: 1.0})
+            saver.save(sess, "model.ckpt")
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Végezetül viszont ez a program is sikeresen megtanulta felismerni a számokat és a tesztelés során sikeresen
+            felismerte a nyolcas számot a képről. 
+            </para>
+    </section> 
 
     <section>
         <title>Android telefonra a TF objektum detektálója</title>
         	<para>
-                Fealadatleírás
+                Telepítsük fel, Próbáljuk ki!
             </para>
-
-    </section>
-
-    <section>
-        <title>SMNIST for Machines</title>
-        	<para>
-                Fealadatleírás
-            </para>
-
+            <para>Ezen feladatunkban a már korábban látottakhoz hasonlóan szintén a TensorFlow-é lesz úgymond a főszerep, maga a "TF" rövidítés is erre utal, azonban most az androidos
+            telefonunkra kellett egy alkalmazást telepíteni majd kipróbálni azt, hogy vajon a kameránk felismeri-e
+            a különböző objectumainkat. Az alábbi linken letölthető GooglePlay-es alkalmazás használatát javasolom, mely azonban nem tartozik a legpontosabb alkalmazások közé, mivel számos alkalommal, érdekes eredményeket produkál (számomra a legérdekesebb az volt amikor a barna szobaszőnyegemet "hot-dog"-nak titulálta a program :D) <link
+                xlink:href="https://play.google.com/store/apps/details?id=hash.tf.objectdetection"
+            /></para>
+        <para>Az alábbiakban bemutatnék pár olyan képet, melyek olyan tárgyakat, valamint a hozzájuk tartozó "felismerési pontosságot" mutatnak be, melyeket viszonylag normálisan sikerült felismernie az alkalmazásnak:</para>
+        <para><inlinemediaobject>
+                <imageobject>
+                    <imagedata fileref="02.jpg" scale="15"/>
+                </imageobject>
+            </inlinemediaobject></para>
+        <para><inlinemediaobject>
+                <imageobject>
+                    <imagedata fileref="03.jpg" scale="15"/>
+                </imageobject>
+            </inlinemediaobject><inlinemediaobject>
+                <imageobject>
+                    <imagedata fileref="04.jpg" scale="15"/>
+                </imageobject>
+            </inlinemediaobject>
+            <inlinemediaobject>
+                <imageobject>
+                    <imagedata fileref="05.jpg" scale="15"/>
+                </imageobject>
+            </inlinemediaobject></para>
     </section>
 
     <section>
         <title>Minecraft MALMO-s példa</title>
         	<para>
-                Fealadatleírás
+            A https://github.com/Microsoft/malmo felhasználásával egy ágens példa, lásd pl.:
+            https://youtu.be/bAPSu3Rndi8, https://bhaxor.blog.hu/2018/11/29/eddig_csaltunk_de_innentol_mi,
+            https://bhaxor.blog.hu/2018/10/28/minecraft_steve_szemuvege
             </para>
-
+            <para>
+            A feladat során a Minecraft MALMÖ projectjében kellett dolgozni és egy ágens példát megnézni. Én személy szerint a feladatot Windows rendszerben oldottam
+            meg. A példa során Steve navigál a pályán és ha akadályba ütközik akkor az alábbi megoldások egyikével
+            próbál meg tovább jutni: ugrik, elfordul valamelyik irányba, elpuszít blokkot vagy épít. Nézzük is meg részletesebben a kódunkat:.
+            </para>
+            <para>
+             <programlisting language="python">
+            <![CDATA[
+            from __future__ import print_function
+            # 
+            ------------------------------------------------------------------------------------------------ 
+            # Copyright (c) 2016 Microsoft Corporation
+            #
+            # Permission is hereby granted, free of charge, to any person obtaining 
+            a copy of this software and
+            # associated documentation files (the "Software"), to deal in the
+            Software without restriction,
+            # including without limitation the rights to use, copy, modify, merge, 
+            publish, distribute,
+            # sublicense, and/or sell copies of the Software, and to permit persons 
+            to whom the Software is
+            # furnished to do so, subject to the following conditions:
+            #
+            # The above copyright notice and this permission notice shall be
+            included in all copies or
+            # substantial portions of the Software.
+            #
+            # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+            EXPRESS OR IMPLIED, INCLUDING BUT
+            # NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+            PARTICULAR PURPOSE AND
+            # NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
+            BE LIABLE FOR ANY CLAIM,
+            # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+            OTHERWISE, ARISING FROM,
+            # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+            DEALINGS IN THE SOFTWARE.
+            # 
+            ------------------------------------------------------------------------------------------------ 
+            # Sample to demonstrate use of the DefaultWorldGenerator, 
+            ContinuousMovementCommands, timestamps and ObservationFromFullStats.
+            # Runs an agent in a standard Minecraft world, randomly seeded, uses 
+            timestamps and observations
+            # to calculate speed of movement, and chooses tiny "programmes" to 
+            execute if the speed drops to below a certain threshold.
+            # Mission continues until the agent dies.
+            from builtins import range
+            import MalmoPython
+            import os
+            import random
+            import sys
+            import time
+            import datetime
+            import json
+            import random
+            import malmoutils
+            malmoutils.fix_print()
+            agent_host = MalmoPython.AgentHost()
+            malmoutils.parse_command_line(agent_host)
+            recordingsDirectory = malmoutils.get_recordings_directory(agent_host)
+            video_requirements = ’<VideoProducer><Width>860</Width><Height>480</ 
+            Height></VideoProducer>’ if agent_host.receivedArgument(" 
+            record_video") else ’’
+            def GetMissionXML():
+            ’’’ Build an XML mission string that uses the DefaultWorldGenerator 
+            .’’’
+            return ’’’<?xml version="1.0" encoding="UTF-8" ?>
+            <Mission xmlns="http://ProjectMalmo.microsoft.com" xmlns:xsi="http 
+            ://www.w3.org/2001/XMLSchema-instance">
+            <About>
+            <Summary>Normal life</Summary>
+            </About>
+            <ServerSection>
+            <ServerHandlers>
+            <DefaultWorldGenerator />
+            </ServerHandlers>
+            </ServerSection>
+            <AgentSection mode="Survival">
+            <Name>Rover</Name>
+            <AgentStart>
+            <Inventory>
+            <InventoryBlock slot="0" type="glowstone" quantity 
+            ="63"/>
+            </Inventory>
+            </AgentStart>
+            <AgentHandlers>
+            <ContinuousMovementCommands/>
+            <ObservationFromFullStats/>’’’ + video_requirements + 
+            ’’’
+            </AgentHandlers>
+            </AgentSection>
+            </Mission>’’’
+            # Variety of strategies for dealing with loss of motion:
+            commandSequences=[
+            "jump 1; move 1; wait 1; jump 0; move 1; wait 2", # attempt to 
+            jump over obstacle
+            "turn 0.5; wait 1; turn 0; move 1; wait 2", # turn right a 
+            little
+            "turn -0.5; wait 1; turn 0; move 1; wait 2", # turn left a 
+            little
+            "move 0; attack 1; wait 5; pitch 0.5; wait 1; pitch 0; attack 1; 
+            wait 5; pitch -0.5; wait 1; pitch 0; attack 0; move 1; wait 2",
+            # attempt to destroy some obstacles
+            "move 0; pitch 1; wait 2; pitch 0; use 1; jump 1; wait 6; use 0; 
+            jump 0; pitch -1; wait 1; pitch 0; wait 2; move 1; wait 2" # 
+            attempt to build tower under our feet
+            ]
+            my_mission = MalmoPython.MissionSpec(GetMissionXML(), True)
+            my_mission_record = MalmoPython.MissionRecordSpec()
+            if recordingsDirectory:
+            my_mission_record.setDestination(recordingsDirectory + "//" + " 
+            Mission_1.tgz")
+            my_mission_record.recordRewards()
+            my_mission_record.recordObservations()
+            my_mission_record.recordCommands()
+            if agent_host.receivedArgument("record_video"):
+            my_mission_record.recordMP4(24,2000000)
+            if agent_host.receivedArgument("test"):
+            my_mission.timeLimitInSeconds(20) # else mission runs forever
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Elsőnek az xml részben meghatározzuk az alap adatokat. Meghatározzuk, hogy milyen legyen a játékmód valamint
+            legeneráljuk magát a világot. A commandSequences listában határozzuk meg azokat a cselekvéseket melyből Steve majd választ, amennyiben elakad a pályán.
+            </para>
+            <para>
+            <programlisting language="python">
+            <![CDATA[
+            max_retries = 3
+            for retry in range(max_retries):
+            try:
+            agent_host.startMission( my_mission, my_mission_record )
+            break
+            except RuntimeError as e:
+            if retry == max_retries - 1:
+            print("Error starting mission",e)
+            print("Is the game running?")
+            exit(1)
+            else:
+            time.sleep(2)
+            # Wait for the mission to start:
+            world_state = agent_host.getWorldState()
+            while not world_state.has_mission_begun:
+            time.sleep(0.1)
+            world_state = agent_host.getWorldState()
+            currentSequence="move 1; wait 4" # start off by moving
+            currentSpeed = 0.0
+            distTravelledAtLastCheck = 0.0
+            timeStampAtLastCheck = datetime.datetime.now()
+            cyclesPerCheck = 10 # controls how quickly the agent responds to 
+            getting stuck, and the amount of time it waits for on a "wait" 
+            command.
+            currentCycle = 0
+            waitCycles = 0
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Miután az alapok megadásával megvagyunk, meg kell próbálnunk elindítani a küldetést. Erre szolgál a kivételkezelés. 
+            Megpróbálja elindítani a küldetést, ám ha többszöri próbálkozás után sem sikerül, abban az esetben hibával leállunk.
+            A while ciklusunk arra fog szolgálni, hogy addig várakozzunk amíg a küldetés el nem kezdodik.
+            </para>
+            <para>
+            <programlisting language="python">
+            <![CDATA[
+            while world_state.is_mission_running:
+            world_state = agent_host.getWorldState()
+            if world_state.number_of_observations_since_last_state > 0:
+            obvsText = world_state.observations[-1].text
+            currentCycle += 1
+            if currentCycle == cyclesPerCheck: # Time to check our speed 
+            and decrement our wait counter (if set):
+            currentCycle = 0
+            if waitCycles > 0:
+            waitCycles -= 1
+            # Now use the latest observation to calculate our 
+            approximate speed:
+            data = json.loads(obvsText) # observation comes in as a 
+            JSON string...
+            dist = data.get(u’DistanceTravelled’, 0) #... containing 
+            a "DistanceTravelled" field (amongst other things).
+            timestamp = world_state.observations[-1].timestamp # 
+            timestamp arrives as a python DateTime object
+            delta_dist = dist - distTravelledAtLastCheck
+            delta_time = timestamp - timeStampAtLastCheck
+            currentSpeed = 1000000.0 * delta_dist / float(delta_time. 
+            microseconds) # "centimetres" per second?
+            distTravelledAtLastCheck = dist
+            timeStampAtLastCheck = timestamp
+            if waitCycles == 0:
+            # Time to execute the next command, if we have one:
+            if currentSequence != "":
+            commands = currentSequence.split(";", 1)
+            command = commands[0].strip()
+            if len(commands) > 1:
+            currentSequence = commands[1]
+            else:
+            currentSequence = ""
+            print(command)
+            verb,sep,param = command.partition(" ")
+            if verb == "wait": # "wait" isn’t a Malmo command - it’s 
+            just used here to pause execution of our "programme".
+            waitCycles = int(param.strip())
+            else:
+            agent_host.sendCommand(command) # Send the command 
+            to Minecraft.
+            if currentSequence == "" and currentSpeed < 50 and waitCycles == 0:
+            # Are we stuck?
+            currentSequence = random.choice(commandSequences) # Choose a 
+            random action (or insert your own logic here for choosing 
+            more sensibly...)
+            print("Stuck! Chosen programme: " + currentSequence)
+            ]]>
+            </programlisting>
+            </para>
+            <para>
+            Végezetül lássuk a fő ciklusunkat. Ebben történik maga a küldetés végre hajtása. Az első if-ben történik a
+            sebesség meghatározása és az ellenorzés hogy éppen haladunk vagy várakozunk. Miuán ez megvan áttérhetünk
+            a második if-re a while ciklusba. Ez vezérli az aktuális parancs végrehajtását. Ha éppen nem várakozunk,
+            akkor hajtsuk végre az aktuális parancsot. A while ciklus végén pedig megvizsgáljuk hogy elakadtunk-e.
+            Ha igen akkor a listából választva próbál Steve megoldást találni arra hogy tovább tudjon haladni.
+            </para>
+            <para><inlinemediaobject>
+                <imageobject>
+                    <imagedata fileref="malmo.png" scale="70"/>
+                </imageobject>
+            </inlinemediaobject></para>
     </section>
-        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-</chapter>           
+    <section>
+        <title>EPAM: Back To The Future</title>
+		<para>
+		    A példa EPAM-os forráskódban szereplő CompletableFuture osztály a Java 8 Concurrency API-al egyidőben került bevezetésre.
+			Célja, illetve felhasználási területe szerint: lényegében asszinkron programok írásakor használjuk, lényegesen könnyebbé teszi ezen programok megírását. 
+            Amennyiben azt vizsgáljuk, hogy a hagyományos és asszinkron programozás között mi a különbség, megállapíthatjuk, hogy míg a hagyományos programozás esetében az utasítások egymás után hajtódnak végre, míg az asszinkron programozás esetén előre nem tudjuk azt, hogy
+			valamilyen számolás vagy egy esetleges metódushívással mikor érünk el eredményt, a program végrehajtása során
+			azonban az asszinkron programozás során kapott "Eredményeinket" használnunk kell. 
+			A Future lényegében egy aszinkron számolás eredményére való referencia (hivatkozás), a CompletableFuture pedig
+			ezeknek kombinálását valamint láncolását teszi lehetővé. 
+		</para>
+		<programlisting language="Java">
+<![CDATA[public class FutureChainingExercise {
+
+private static ExecutorService executorService = Executors.newFixedThreadPool(2);
+]]>
+		</programlisting>
+		<para>
+		    Haladva tovább a programunkban, láthatjuk, hogy a szálak végrehajtásáért és ütemezéséért az ExecutorService parancs fog felelni, magában az EPAM-os példánkban 2 szálat fogunk viszgálni.
+		</para>
+		<programlisting language="Java">
+<![CDATA[public static void main(String[] args) {
+ CompletableFuture<String> longTask
+ = CompletableFuture.supplyAsync(() -> {
+ System.out.println("long kezd");
+ sleep(1000);
+ System.out.println("long befejez");
+ return "Hello";
+ }, executorService);
+]]>
+		</programlisting>
+		<para>
+		    A CompletableFuture supplyAsync metódusával megadunk egy feladatot, amelyet majd a megadott 
+			"végrehajtó" egy adott szála fog végrehajtani, abban az esetben, amennyiben lesz egy szabad szála. Mivel az executor nem kapott feladatot, így maga a feladat el fog indulni a két szálun közül az egyik szálon.
+		</para>
+		<programlisting language="Java">
+<![CDATA[CompletableFuture<String> shortTask
+ = CompletableFuture.supplyAsync(() -> {
+ System.out.println("short kezd");
+ sleep(500);
+ System.out.println("short befejez");
+ return "Hi";
+ }, executorService);
+]]>
+		</programlisting>
+		<para>
+		    A második megadott feladatot elkezdi a második executor szál, míg a harmadik valamint az ezek után definiált feladatatok végrehajtása az alábbiak szerint történik (lásd a kód után:)
+		</para>
+		<programlisting language="Java">
+<![CDATA[CompletableFuture<String> mediumTask
+ = CompletableFuture.supplyAsync(() -> {
+ System.out.println("medium kezd");
+ sleep(750);
+ System.out.println("medium befejez");
+ return "Hey";
+ }, executorService);
+]]>
+		</programlisting>
+		<para>
+		    A harmadik, és ez után definiált feledatok végrehajtása két szál esetén abban az esetben következhet, amennyiben valamelyik szálunk felszabadulttá válik.
+		</para>
+		<programlisting language="Java">
+<![CDATA[CompletableFuture<String> result
+= longTask.applyToEitherAsync(shortTask, String::toUpperCase, executorService);
+  //= longTask.applyToEitherAsync(shortTask, FutureChainingExercise::myUppercase, executorService);
+ result = result.thenApply(s -> s + " World");
+]]>
+		</programlisting>
+		<para>
+		    Az eredmény vagyis result, egy CompletableFuture string lesz. Az applyToEitherAsync
+			metódus a longTask (hosszú folyamat) vagy a shortTask(rövid folyamat) elkészülésére vár, majd ezt a toUpperCase segítségével Capitalize-ttá, vagyis nagybetűssé teszi. A hibátlan működéséhez számunkra elegendő az is, ha
+			a megadott két erőforrásunk közül az egyik készül el, majd ennek az eredményével dolgozunk tovább.
+			Amennyiben a példánkban az applyToEitherAsync függvény végrehajtásához felszabadul egy szál, addigra már
+			a short- és longTaskjaink is egyaránt befejeződnek. 
+		</para>
+		<para>
+		    Azt ezt követően meghívásra kerülő result.thenApply az előző számítási folyamat után fog tovább dolgozni a <command>result</command>
+			által később visszaadott String-en.
+		</para>
+		<programlisting language="Java">
+<![CDATA[CompletableFuture<Void> extraLongTask
+ = CompletableFuture.supplyAsync(() -> {
+ System.out.println("extralong kezd");
+ sleep(1500);
+ System.out.println("extralong befejez");
+ return null;
+ }, executorService);
+ result = result.thenCombineAsync(mediumTask, (s1, s2) -> s2 + ", " +
+s1, executorService);
+]]>
+		</programlisting>
+	</section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+</chapter>          
